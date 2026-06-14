@@ -1,0 +1,76 @@
+====================================================================
+                        GREENHAVEN NURSERY
+                      COMPREHENSIVE USER GUIDE
+====================================================================
+
+OVERVIEW
+--------------------------------------------------------------------
+GreenHaven Nursery is a modern, full-stack e-commerce web application designed specifically for purchasing indoor and outdoor plants. Built with a Python-Flask backend and a dynamic TailwindCSS frontend, it features robust authentication, seamless checkout, an AI-powered chatbot, and a powerful administrative control panel.
+
+1. CUSTOMER STOREFRONT FEATURES
+--------------------------------------------------------------------
+* Product Catalog:
+  - Users can browse a rich catalog of plants categorized cleanly (Indoor, Outdoor, Succulents). 
+  - Dynamic fetching and infinite-scroll style grid load elements seamlessly.
+  
+* Shopping Cart & Wishlist: 
+  - Logged-in users can effortlessly add products to their wishlist.
+  - The dynamic shopping cart updates in real-time, holding quantities and displaying instant total-price calculations.
+
+* Real-Time Checkout (Razorpay):
+  - Integrating Razorpay enables swift, secure external transactions. 
+  - (Note: The system gracefully features a "mock mode" capability to process dummy orders securely if valid Razorpay API keys are removed from the .env).
+
+* PlantBot (AI Assistant):
+  - A friendly, hovering chatbot widget in the bottom right corner.
+  - Recognizes plant-related keywords and helps users instantly find answers regarding watering routines, sunlight requirements, or shipping queries without refreshing the page.
+
+
+2. USER ACCOUNTS & AUTHENTICATION
+--------------------------------------------------------------------
+* Seamless Registration & Login:
+  - Account creation handles encrypted salting/hashing and instant JWT (JSON Web Token) generation to prevent constant re-logins.
+  - Features an elegant "glowing organic" modal login popup seamlessly built over the browsing interface.
+  
+* Forgot Password:
+  - Secure email-based token routing allows users to reset passwords safely if they lose access.
+  
+* Order History & Invoices:
+  - Dedicated private profiles where customers can view their lifetime purchase history.
+  - Features real-time Printable Invoice Downloads with a single click, perfectly framing a print-ready receipt.
+
+
+3. ADMINISTRATIVE CONTROL PANEL
+--------------------------------------------------------------------
+Administrators access a protected, separate routing environment (/admin) featuring a comprehensive CRM (Customer Relationship Manager).
+
+* Security Infrastructure:
+  - The admin page requires a specific hardcoded 'admin' user role to access; standard users are blocked. Active logging-in intelligently detects Admin accounts and routes them instantly away from the storefront into the dashboard.
+  
+* Real-Time Analytics Dashboard:
+  - Fetches instantaneous calculations of "Total Users Registered", "Total Historical Revenue", and "Total Orders". 
+
+* Product Catalog Management (CRUD):
+  - Admins can securely interact with the "Products" tab to ADD, EDIT, or entirely DELETE plants from the database footprint in real-time.
+  
+* Customer Support / Message Inbox:
+  - Users submitting forms via the "Contact Us" page populate directly into the platform's Admin Message board.
+  - Real-Time SMTP Integration: Copies of all customer contacts are simultaneously forwarded directly to the actual Admin Email (.env) for instantaneous business action!
+  - User records and Order History lists can be actively checked. 
+
+
+4. TECHNICAL SPECIFICATIONS & SETUP
+--------------------------------------------------------------------
+* Technology Stack: 
+  - Backend API: Python (Flask)
+  - Database System: Relational MySQL (Using PyMySQL & DB connection pooling)
+  - Frontend: Vanilla JavaScript, HTML5, Custom CSS, TailwindCSS Framework
+
+* Environmental Setup (.env):
+  - DB_HOST, DB_NAME, DB_USER, DB_PASSWORD: Configures Database
+  - SECRET_KEY: Used heavily by cryptography/JWT 
+  - RAZORPAY_KEY_ID & RAZORPAY_KEY_SECRET: Handshakes payment integrations
+  - MAIL_USERNAME & MAIL_PASSWORD: SMTP Server authentication (Recommend using Gmail App Passwords)
+
+To execute the project locally:
+ `python app.py` on your terminal, connecting naturally to localhost:5000.

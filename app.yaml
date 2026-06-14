@@ -1,0 +1,19 @@
+runtime: python39
+
+entrypoint: gunicorn -b :$PORT wsgi:app --timeout 300 --workers 2
+
+instance_class: F2
+
+env_variables:
+  FLASK_ENV: "production"
+  SECRET_KEY: "super_secret_dev_key"
+  DB_HOST: "34.10.117.44"
+  DB_USER: "root"
+  DB_PASSWORD: "Admin@123"
+  DB_NAME: "nursery_db"
+  DB_PORT: "3306"
+
+automatic_scaling:
+  target_cpu_utilization: 0.65
+  min_instances: 1
+  max_instances: 10
