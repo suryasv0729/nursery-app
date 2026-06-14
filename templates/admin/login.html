@@ -1,0 +1,96 @@
+{% extends "admin/admin_base.html" %}
+
+{% block title %}Admin Login | Nursery App{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50 min-h-[80vh] flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md">
+        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Admin Portal
+        </h2>
+        <p class="mt-2 text-center text-sm text-gray-600">
+            Secure login for GreenHaven administrators
+        </p>
+    </div>
+
+    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div class="bg-white py-8 px-4 shadow-xl sm:rounded-2xl sm:px-10 border border-gray-100 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-green-500 z-10"></div>
+            
+            <form id="admin-login-form" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Email address</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-envelope text-gray-400"></i>
+                        </div>
+                        <input id="admin-email" type="email" required class="focus:ring-green-500 focus:border-green-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-3 border px-4">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Password</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-lock text-gray-400"></i>
+                        </div>
+                        <input id="admin-pass" type="password" required class="focus:ring-green-500 focus:border-green-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-3 border px-4">
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit" id="admin-log-btn" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition">
+                        Sign in as Administrator
+                    </button>
+                </div>
+            </form>
+            
+            <div class="mt-6 text-center text-sm">
+                <a href="/" class="text-green-600 hover:text-green-500 font-medium"><i class="fa-solid fa-arrow-left mr-1"></i> Back to Store</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        if(authToken && currentUser && currentUser.role === 'admin') {
+            window.location.href = "/admin"; // Already logged in
+        }
+    });
+
+    document.getElementById('admin-login-form').onsubmit = async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('admin-log-btn');
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...';
+        btn.disabled = true;
+        
+        const req = {
+            email: document.getElementById('admin-email').value,
+            password: document.getElementById('admin-pass').value
+        };
+        
+        const { ok, data } = await apiCall('/api/auth/login', {
+            method: 'POST', body: JSON.stringify(req)
+        });
+        
+        if(ok && data.user.role === 'admin') {
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            window.location.href = "/admin";
+        } else if (ok) {
+            // Logged in successfully but not an admin
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            showToast('Access Denied: Not an administrator', 'error');
+        } else {
+            showToast(data.message || 'Login failed', 'error');
+        }
+        
+        btn.innerHTML = 'Sign in as Administrator';
+        btn.disabled = false;
+    };
+</script>
+{% endblock %}

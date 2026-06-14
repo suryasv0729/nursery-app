@@ -1,45 +1,28 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, jsonify, request
+from controllers.tribute_controller import get_tribute_data, claim_reward
+from controllers.auth_controller import verify_token, authorize
 
 tribute_bp = Blueprint('tribute', __name__)
 
-# Tribute page content endpoint
-@tribute_bp.route('/info', methods=['GET'])
-def get_tribute_info():
-    try:
-        tribute_data = {
-            'title': 'In Memory of Our Beloved Plants',
-            'description': 'This page is dedicated to the plants that have touched our lives and enriched our environment.',
-            'message': 'Every plant tells a story. Every leaf whispers wisdom. Every flower brings joy. Let us honor and remember the green companions that have made our world more beautiful.',
-            'dedication': 'To all the plants that have been part of our journey - may your legacy continue to inspire us to nurture and protect nature.'
-        }
-        
-        return jsonify(tribute_data), 200
-        
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+@tribute_bp.route('/', methods=['GET'])
+def get_tribute():
+    # Attempt to extract user_id from optional auth token
+    user_id = None
+    auth_header = request.headers.get('Authorization')
+    if auth_header and auth_header.startswith('Bearer '):
+        token = auth_header.split(' ')[1]
+        payload = verify_token(token)
+        if payload and 'user_id' in payload:
+            user_id = payload['user_id']
+            
+    res = get_tribute_data(user_id)
+    return jsonify(res['data']), res['status']
 
-@tribute_bp.route('/submit', methods=['POST'])
-def submit_tribute():
-    try:
-        data = request.get_json()
-        plant_name = data.get('plant_name')
-        message = data.get('message')
-        submitted_by = data.get('submitted_by', 'Anonymous')
-        
-        if not plant_name or not message:
-            return jsonify({'error': 'Plant name and message are required'}), 400
-        
-        # In a real application, you would save this to a database
-        # For now, just return success
-        
-        return jsonify({
-            'message': 'Tribute submitted successfully',
-            'tribute': {
-                'plant_name': plant_name,
-                'message': message,
-                'submitted_by': submitted_by
-            }
-        }), 201
-        
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+@tribute_bp.route('/claim', methods=['POST'])
+@authorize()
+def claim_reward_route(current_user_id, current_user_role):
+    data = request.json
+    product_ids = data.get('product_ids', [])
+    res = claim_reward(current_user_id, product_ids)
+    return jsonify(res['data']), res['status']
+

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}About Us | Nursery App{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50 flex flex-col min-h-[80vh]">
+    <div class="relative bg-green-700 py-24 sm:py-32 overflow-hidden w-full">
+        <!-- Decorative background elements -->
+        <div class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80">
+            <div class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#86efac] to-[#166534] opacity-20 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"></div>
+        </div>
+        <div class="mx-auto max-w-7xl px-6 lg:px-8 relative z-10 text-center">
+            <h1 class="text-4xl font-bold tracking-tight text-white sm:text-6xl">About GreenHaven</h1>
+            <p class="mt-6 text-lg leading-8 text-green-100 max-w-2xl mx-auto">
+                We are on a mission to reconnect people with nature. Born out of a simple love for greenery, GreenHaven has grown into a leading destination for plant enthusiasts.
+            </p>
+        </div>
+    </div>
+    
+    <div class="mx-auto max-w-7xl px-6 lg:px-8 py-20">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+            <div>
+                <img src="{{ url_for('static', filename='images/greenhouse_about.png') }}" alt="Our Greenhouse" class="rounded-3xl shadow-2xl object-cover h-96 w-full transform hover:scale-105 transition duration-500">
+            </div>
+            <div>
+                <h2 class="text-3xl font-bold text-gray-900 mb-6">Our Story</h2>
+                <p class="text-lg text-gray-600 mb-6 leading-relaxed">
+                    What started in 2024 as a small backyard project has blossomed into a full-scale operation. We believe that caring for plants teaches us patience, responsibility, and the profound beauty of growth.
+                </p>
+                <p class="text-lg text-gray-600 leading-relaxed mb-8">
+                    Every plant we ship is hand-selected and carefully packaged to ensure it arrives at your door ready to thrive. Whether you're a seasoned botanist or a complete beginner, we're here to support your green journey.
+                </p>
+                
+                <div class="grid grid-cols-2 gap-8 pt-4 border-t border-gray-200">
+                    <div>
+                        <div class="text-4xl font-bold text-green-600 mb-2">5K+</div>
+                        <div class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Happy Customers</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-bold text-green-600 mb-2">200+</div>
+                        <div class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Plant Varieties</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

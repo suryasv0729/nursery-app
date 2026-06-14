@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Your Wishlist | Nursery App{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50 py-12 min-h-[70vh]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight mb-8">Your Wishlist</h1>
+        
+        <div id="loader" class="py-10 text-center">
+            <i class="fa-solid fa-spinner fa-spin text-green-600 text-3xl"></i>
+        </div>
+        
+        <div id="empty-state" class="hidden text-center py-20 bg-white rounded-2xl shadow-sm border border-gray-100">
+            <div class="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                <i class="fa-regular fa-heart"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-900 mb-2">Your wishlist is empty</h2>
+            <p class="text-gray-500 mb-6">Save your favorite plants here to buy them later.</p>
+            <a href="/products" class="text-green-600 font-medium hover:text-green-700">Explore Catalog</a>
+        </div>
+        
+        <div id="wishlist-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 hidden">
+            <!-- JS Injected -->
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        if(!authToken) {
+            window.location.href = "/";
+            return;
+        }
+        
+        const {ok, data} = await apiCall('/api/cart/wishlist');
+        document.getElementById('loader').classList.add('hidden');
+        
+        if(ok && Array.isArray(data) && data.length > 0) {
+            document.getElementById('wishlist-grid').classList.remove('hidden');
+            let html = '';
+            data.forEach(p => {
+                const imageUrl = p.image_url || 'https://images.unsplash.com/photo-1498814117408-e396f6259ce2?auto=format&fit=crop&w=500&q=80';
+                html += `
+                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden product-card relative group" id="wishlist-item-${p.product_id}">
+                    <button onclick="removeWishlist(${p.product_id})" class="absolute top-3 right-3 z-10 w-8 h-8 bg-white/80 backdrop-blur rounded-full flex items-center justify-center shadow text-red-500 hover:bg-white hover:text-red-700 transition">
+                        <i class="fa-solid fa-xmark text-sm"></i>
+                    </button>
+                    <a href="/product/${p.product_id}" class="block overflow-hidden h-48">
+                        <img src="${imageUrl}" class="w-full h-full object-cover">
+                    </a>
+                    <div class="p-4">
+                        <a href="/product/${p.product_id}" class="block font-bold text-gray-900 mb-1 truncate">${p.name}</a>
+                        <div class="text-lg font-bold text-gray-900 mb-3">₹${parseFloat(p.price).toFixed(2)}</div>
+                        <button onclick="addToCart(${p.product_id})" class="w-full border border-green-600 text-green-600 text-sm font-medium py-2 rounded hover:bg-green-50 transition">
+                            Move to Cart
+                        </button>
+                    </div>
+                </div>`;
+            });
+            document.getElementById('wishlist-grid').innerHTML = html;
+        } else {
+            document.getElementById('empty-state').classList.remove('hidden');
+        }
+    });
+
+    async function removeWishlist(productId) {
+        const {ok} = await apiCall('/api/cart/wishlist/toggle', {
+            method: 'POST', body: JSON.stringify({ product_id: productId })
+        });
+        if(ok) {
+            document.getElementById(`wishlist-item-${productId}`).remove();
+            showToast('Removed from wishlist');
+            
+            // Check if grid is now empty
+            if(document.getElementById('wishlist-grid').children.length === 0) {
+                document.getElementById('wishlist-grid').classList.add('hidden');
+                document.getElementById('empty-state').classList.remove('hidden');
+            }
+        }
+    }
+</script>
+{% endblock %}

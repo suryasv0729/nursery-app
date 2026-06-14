@@ -7,4 +7,3 @@ Flask-Mail==0.9.1
 python-dotenv==1.0.0
 cryptography
 gunicorn==21.2.0
-setuptools>=65.5.0

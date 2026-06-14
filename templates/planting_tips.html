@@ -1,0 +1,474 @@
+{% extends "base.html" %}
+
+{% block title %}Planting Tips & Maintenance | GreenHaven{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative bg-green-900 overflow-hidden text-white py-20">
+    <div class="absolute inset-0 opacity-40 mix-blend-overlay">
+        <img src="https://images.unsplash.com/photo-1466692476877-38e556e8736e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80" alt="Beautiful Garden" class="w-full h-full object-cover">
+    </div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
+        <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-4 drop-shadow-md">
+            Master the Art of <span class="text-green-400">Gardening</span>
+        </h1>
+        <p class="text-xl md:text-2xl text-green-100 max-w-3xl mx-auto drop-shadow-sm font-light">
+            Tips, maintenance guides, and uses for all your favorite plants to keep your green space thriving.
+        </p>
+    </div>
+</section>
+
+<!-- Interactive Content Section -->
+<section class="py-16 bg-gray-50 flex-grow min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- Tab Navigation -->
+        <div class="flex overflow-x-auto hide-scroll-bar py-4 mb-8 border-b border-gray-200">
+            <div class="flex space-x-4 mx-auto pb-2">
+                <button onclick="showTab('indoor')" class="tab-btn px-6 py-3 rounded-full text-sm font-medium bg-green-600 text-white shadow-md transition transform hover:-translate-y-1" id="tab-btn-indoor">Indoor Plants</button>
+                <button onclick="showTab('outdoor')" class="tab-btn px-6 py-3 rounded-full text-sm font-medium bg-white text-gray-600 hover:bg-green-50 shadow-sm transition transform hover:-translate-y-1" id="tab-btn-outdoor">Outdoor Wonders</button>
+                <button onclick="showTab('succulents')" class="tab-btn px-6 py-3 rounded-full text-sm font-medium bg-white text-gray-600 hover:bg-green-50 shadow-sm transition transform hover:-translate-y-1" id="tab-btn-succulents">Succulents</button>
+                <button onclick="showTab('seeds')" class="tab-btn px-6 py-3 rounded-full text-sm font-medium bg-white text-gray-600 hover:bg-green-50 shadow-sm transition transform hover:-translate-y-1" id="tab-btn-seeds">Seeds</button>
+                <button onclick="showTab('pesticides')" class="tab-btn px-6 py-3 rounded-full text-sm font-medium bg-white text-gray-600 hover:bg-green-50 shadow-sm transition transform hover:-translate-y-1" id="tab-btn-pesticides">Organic Pesticides</button>
+                <button onclick="showTab('pots')" class="tab-btn px-6 py-3 rounded-full text-sm font-medium bg-white text-gray-600 hover:bg-green-50 shadow-sm transition transform hover:-translate-y-1" id="tab-btn-pots">Pots & Planters</button>
+            </div>
+        </div>
+
+        <!-- Tab Content Container -->
+        <div class="relative">
+            
+            <!-- Indoor Tab -->
+            <div id="tab-indoor" class="tab-content block animate-fade-in-up">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 hover:shadow-lg transition">
+                        <div class="w-14 h-14 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center text-2xl mb-6"><i class="fa-solid fa-seedling"></i></div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Planting Tips</h3>
+                        <p class="text-gray-600 leading-relaxed mb-4">Choose a pot with drainage holes. Use well-draining indoor potting mix with perlite. Don't pack the soil too tightly to let roots breathe.</p>
+                        <ul class="text-sm text-gray-500 space-y-2">
+                            <li><i class="fa-solid fa-check text-green-500 mr-2"></i> Ensure indirect medium light</li>
+                            <li><i class="fa-solid fa-check text-green-500 mr-2"></i> Keep consistent room temp</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 hover:shadow-lg transition">
+                        <div class="w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mb-6"><i class="fa-solid fa-droplet"></i></div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Maintenance</h3>
+                        <p class="text-gray-600 leading-relaxed mb-4">Water only when the top 2 inches of soil are dry. Overwatering is the #1 killer! Wipe leaves with a damp cloth monthly to remove dust.</p>
+                        <ul class="text-sm text-gray-500 space-y-2">
+                            <li><i class="fa-solid fa-check text-blue-500 mr-2"></i> Feed mildly during spring</li>
+                            <li><i class="fa-solid fa-check text-blue-500 mr-2"></i> Avoid drafty windows</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 hover:shadow-lg transition">
+                        <div class="w-14 h-14 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-2xl mb-6"><i class="fa-solid fa-house-chimney"></i></div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Uses & Benefits</h3>
+                        <p class="text-gray-600 leading-relaxed mb-4">Indoor plants like Snake Plants and Peace Lilies purify the air. They boost productivity and add an incredible aesthetic to living rooms.</p>
+                    </div>
+                </div>
+
+                <div class="mt-8 bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6 border-b border-gray-100 pb-4">Indoor Plants FAQ</h2>
+                    <div class="space-y-4">
+                        <details class="group border border-gray-200 rounded-xl bg-gray-50 p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer shadow-sm hover:shadow-md transition">
+                            <summary class="flex justify-between items-center font-medium cursor-pointer list-none text-md text-gray-900">
+                                <span>How often should I water my indoor plants?</span>
+                                <span class="transition group-open:rotate-180"><i class="fa-solid fa-chevron-down text-green-600"></i></span>
+                            </summary>
+                            <div class="text-gray-600 mt-4 leading-relaxed bg-white p-4 rounded-lg border border-gray-100 text-sm">
+                                Generally, wait until the top 1-2 inches of soil are dry. Overwatering is a common mistake; it's better to underwater slightly than to keep the soil constantly soggy.
+                            </div>
+                        </details>
+                        <details class="group border border-gray-200 rounded-xl bg-gray-50 p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer shadow-sm hover:shadow-md transition">
+                            <summary class="flex justify-between items-center font-medium cursor-pointer list-none text-md text-gray-900">
+                                <span>Why are the leaves on my indoor plant turning yellow?</span>
+                                <span class="transition group-open:rotate-180"><i class="fa-solid fa-chevron-down text-green-600"></i></span>
+                            </summary>
+                            <div class="text-gray-600 mt-4 leading-relaxed bg-white p-4 rounded-lg border border-gray-100 text-sm">
+                                Yellow leaves can be a sign of overwatering, underwatering, poor drainage, or a lack of sunlight. Check the soil moisture first to determine if watering is the issue.
+                            </div>
+                        </details>
+                        <details class="group border border-gray-200 rounded-xl bg-gray-50 p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer shadow-sm hover:shadow-md transition">
+                            <summary class="flex justify-between items-center font-medium cursor-pointer list-none text-md text-gray-900">
+                                <span>Can I use regular outdoor soil for indoor plants?</span>
+                                <span class="transition group-open:rotate-180"><i class="fa-solid fa-chevron-down text-green-600"></i></span>
+                            </summary>
+                            <div class="text-gray-600 mt-4 leading-relaxed bg-white p-4 rounded-lg border border-gray-100 text-sm">
+                                No, outdoor soil is usually too heavy and doesn't drain well enough for indoor pots. It may also contain pests or diseases. Always use a high-quality indoor potting mix.
+                            </div>
+                        </details>
+                        <details class="group border border-gray-200 rounded-xl bg-gray-50 p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer shadow-sm hover:shadow-md transition">
+                            <summary class="flex justify-between items-center font-medium cursor-pointer list-none text-md text-gray-900">
+                                <span>Do indoor plants need direct sunlight?</span>
+                                <span class="transition group-open:rotate-180"><i class="fa-solid fa-chevron-down text-green-600"></i></span>
+                            </summary>
+                            <div class="text-gray-600 mt-4 leading-relaxed bg-white p-4 rounded-lg border border-gray-100 text-sm">
+                                Most popular indoor plants prefer bright, indirect light rather than direct sunlight, which can scorch their leaves.
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Outdoor Tab -->
+            <div id="tab-outdoor" class="tab-content hidden animate-fade-in-up">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 hover:shadow-lg transition">
+                        <div class="w-14 h-14 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center text-2xl mb-6"><i class="fa-solid fa-sun"></i></div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Planting Tips</h3>
+                        <p class="text-gray-600 leading-relaxed mb-4">Select a site with proper sunlight mapping. Dig a hole twice the width of the root ball. Mix compost with native soil when backfilling.</p>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 hover:shadow-lg transition">
+                        <div class="w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mb-6"><i class="fa-solid fa-cloud-showers-heavy"></i></div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Maintenance</h3>
+                        <p class="text-gray-600 leading-relaxed mb-4">Water deeply and less frequently to encourage deep root growth. Apply 2-3 inches of mulch to retain moisture and suppress weeds.</p>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 hover:shadow-lg transition">
+                        <div class="w-14 h-14 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center text-2xl mb-6"><i class="fa-solid fa-map-location-dot"></i></div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Uses & Benefits</h3>
+                        <p class="text-gray-600 leading-relaxed mb-4">Creates stunning curb appeal, provides natural shade, and attracts essential pollinators like bees and butterflies to your yard.</p>
+                    </div>
+                </div>
+
+                <div class="mt-8 bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6 border-b border-gray-100 pb-4">Outdoor Wonders FAQ</h2>
+                    <div class="space-y-4">
+                        <details class="group border border-gray-200 rounded-xl bg-gray-50 p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer shadow-sm hover:shadow-md transition">
+                            <summary class="flex justify-between items-center font-medium cursor-pointer list-none text-md text-gray-900">
+                                <span>When is the best time to plant outdoor flowers or shrubs?</span>
+                                <span class="transition group-open:rotate-180"><i class="fa-solid fa-chevron-down text-green-600"></i></span>
+                            </summary>
+                            <div class="text-gray-600 mt-4 leading-relaxed bg-white p-4 rounded-lg border border-gray-100 text-sm">
+                                Spring and early autumn are generally the best times to plant, as the weather is milder, reducing transplant shock and allowing roots to establish before extreme temperatures.
+                            </div>
+                        </details>
+                        <details class="group border border-gray-200 rounded-xl bg-gray-50 p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer shadow-sm hover:shadow-md transition">
+                            <summary class="flex justify-between items-center font-medium cursor-pointer list-none text-md text-gray-900">
+                                <span>How much mulch should I apply around my outdoor plants?</span>
+                                <span class="transition group-open:rotate-180"><i class="fa-solid fa-chevron-down text-green-600"></i></span>
+                            </summary>
+                            <div class="text-gray-600 mt-4 leading-relaxed bg-white p-4 rounded-lg border border-gray-100 text-sm">
+                                Apply about 2 to 3 inches of mulch around the base of your plants. Make sure to keep the mulch a few inches away from the plant stem to prevent rot.
+                            </div>
+                        </details>
+                        <details class="group border border-gray-200 rounded-xl bg-gray-50 p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer shadow-sm hover:shadow-md transition">
+                            <summary class="flex justify-between items-center font-medium cursor-pointer list-none text-md text-gray-900">
+                                <span>How do I protect outdoor plants from frost?</span>
+                                <span class="transition group-open:rotate-180"><i class="fa-solid fa-chevron-down text-green-600"></i></span>
+                            </summary>
+                            <div class="text-gray-600 mt-4 leading-relaxed bg-white p-4 rounded-lg border border-gray-100 text-sm">
+                                Cover plants with a frost cloth, bed sheets, or burlap before sunset. Watering the soil beforehand can also help trap heat.
+                            </div>
+                        </details>
+                        <details class="group border border-gray-200 rounded-xl bg-gray-50 p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer shadow-sm hover:shadow-md transition">
+                            <summary class="flex justify-between items-center font-medium cursor-pointer list-none text-md text-gray-900">
+                                <span>How often should I fertilize my outdoor garden?</span>
+                                <span class="transition group-open:rotate-180"><i class="fa-solid fa-chevron-down text-green-600"></i></span>
+                            </summary>
+                            <div class="text-gray-600 mt-4 leading-relaxed bg-white p-4 rounded-lg border border-gray-100 text-sm">
+                                This depends on the plant, but typically, applying a slow-release granular fertilizer in the spring and optionally in mid-summer is sufficient for most outdoor gardens.
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Succulents Tab -->
+            <div id="tab-succulents" class="tab-content hidden animate-fade-in-up">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 hover:shadow-lg transition">
+                        <div class="w-14 h-14 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center text-2xl mb-6"><i class="fa-solid fa-leaf"></i></div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Planting Tips</h3>
+                        <p class="text-gray-600 leading-relaxed mb-4">Use a coarse, gritty cactus/succulent soil mix. Avoid glass containers without drainage. Succulents love terracotta pots!</p>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 hover:shadow-lg transition">
+                        <div class="w-14 h-14 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center text-2xl mb-6"><i class="fa-solid fa-temperature-arrow-up"></i></div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Maintenance</h3>
+                        <p class="text-gray-600 leading-relaxed mb-4">Soak and dry method is best: water until it drains out, then wait until the soil is completely bone-dry before watering again. Keep in bright light.</p>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 hover:shadow-lg transition">
+                        <div class="w-14 h-14 bg-yellow-100 text-yellow-600 rounded-2xl flex items-center justify-center text-2xl mb-6"><i class="fa-solid fa-star"></i></div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Uses & Benefits</h3>
+                        <p class="text-gray-600 leading-relaxed mb-4">Perfect for busy people due to low maintenance. They make gorgeous terrariums, elegant desk ornaments, and even thoughtful gifts.</p>
+                    </div>
+                </div>
+
+                <div class="mt-8 bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6 border-b border-gray-100 pb-4">Succulents FAQ</h2>
+                    <div class="space-y-4">
+                        <details class="group border border-gray-200 rounded-xl bg-gray-50 p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer shadow-sm hover:shadow-md transition">
+                            <summary class="flex justify-between items-center font-medium cursor-pointer list-none text-md text-gray-900">
+                                <span>How do I know if I'm overwatering my succulents?</span>
+                                <span class="transition group-open:rotate-180"><i class="fa-solid fa-chevron-down text-green-600"></i></span>
+                            </summary>
+                            <div class="text-gray-600 mt-4 leading-relaxed bg-white p-4 rounded-lg border border-gray-100 text-sm">
+                                Overwatered succulents will have mushy, translucent, or yellow leaves that easily fall off. If this happens, stop watering and check the roots for rot.
+                            </div>
+                        </details>
+                        <details class="group border border-gray-200 rounded-xl bg-gray-50 p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer shadow-sm hover:shadow-md transition">
+                            <summary class="flex justify-between items-center font-medium cursor-pointer list-none text-md text-gray-900">
+                                <span>Why is my succulent stretching and getting tall?</span>
+                                <span class="transition group-open:rotate-180"><i class="fa-solid fa-chevron-down text-green-600"></i></span>
+                            </summary>
+                            <div class="text-gray-600 mt-4 leading-relaxed bg-white p-4 rounded-lg border border-gray-100 text-sm">
+                                This is called etiolation, and it happens when the succulent isn't getting enough light. Move it to a brighter spot to encourage compact growth (but introduce it gradually to avoid sunburn).
+                            </div>
+                        </details>
+                        <details class="group border border-gray-200 rounded-xl bg-gray-50 p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer shadow-sm hover:shadow-md transition">
+                            <summary class="flex justify-between items-center font-medium cursor-pointer list-none text-md text-gray-900">
+                                <span>What kind of soil is best for succulents?</span>
+                                <span class="transition group-open:rotate-180"><i class="fa-solid fa-chevron-down text-green-600"></i></span>
+                            </summary>
+                            <div class="text-gray-600 mt-4 leading-relaxed bg-white p-4 rounded-lg border border-gray-100 text-sm">
+                                Succulents need fast-draining soil. Use a specialized cactus/succulent mix, or make your own by mixing regular potting soil with plenty of perlite, pumice, or coarse sand.
+                            </div>
+                        </details>
+                        <details class="group border border-gray-200 rounded-xl bg-gray-50 p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer shadow-sm hover:shadow-md transition">
+                            <summary class="flex justify-between items-center font-medium cursor-pointer list-none text-md text-gray-900">
+                                <span>Can succulents survive in rooms with no natural light?</span>
+                                <span class="transition group-open:rotate-180"><i class="fa-solid fa-chevron-down text-green-600"></i></span>
+                            </summary>
+                            <div class="text-gray-600 mt-4 leading-relaxed bg-white p-4 rounded-lg border border-gray-100 text-sm">
+                                Most succulents require bright, indirect or direct sunlight. Without natural light, you will need a strong grow light; otherwise, they will stretch and eventually decline.
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seeds Tab -->
+            <div id="tab-seeds" class="tab-content hidden animate-fade-in-up">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 hover:shadow-lg transition">
+                        <div class="w-14 h-14 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center text-2xl mb-6"><i class="fa-solid fa-plant-wilt"></i></div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Planting Tips</h3>
+                        <p class="text-gray-600 leading-relaxed mb-4">Start seeds indoors 6-8 weeks before the last frost. Use a fine, sterile seed-starting mix. Do not bury small seeds; simply press them gently into the soil.</p>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 hover:shadow-lg transition">
+                        <div class="w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mb-6"><i class="fa-solid fa-spray-can"></i></div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Maintenance</h3>
+                        <p class="text-gray-600 leading-relaxed mb-4">Keep the soil consistently moist but never soggy. Use a spray bottle instead of pouring water to avoid dislodging delicate seeds. Provide 12-16 hours of light.</p>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 hover:shadow-lg transition">
+                        <div class="w-14 h-14 bg-yellow-100 text-yellow-600 rounded-2xl flex items-center justify-center text-2xl mb-6"><i class="fa-solid fa-basket-shopping"></i></div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Uses & Benefits</h3>
+                        <p class="text-gray-600 leading-relaxed mb-4">Growing from seeds is incredibly cost-effective. It gives you access to rare heirloom varieties and the satisfaction of watching life spring from scratch!</p>
+                    </div>
+                </div>
+
+                <div class="mt-8 bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6 border-b border-gray-100 pb-4">Seeds FAQ</h2>
+                    <div class="space-y-4">
+                        <details class="group border border-gray-200 rounded-xl bg-gray-50 p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer shadow-sm hover:shadow-md transition">
+                            <summary class="flex justify-between items-center font-medium cursor-pointer list-none text-md text-gray-900">
+                                <span>How deep should I plant my seeds?</span>
+                                <span class="transition group-open:rotate-180"><i class="fa-solid fa-chevron-down text-green-600"></i></span>
+                            </summary>
+                            <div class="text-gray-600 mt-4 leading-relaxed bg-white p-4 rounded-lg border border-gray-100 text-sm">
+                                A general rule of thumb is to plant a seed twice as deep as its diameter. Very tiny seeds often just need to be pressed into the surface of the soil, as they need light to germinate.
+                            </div>
+                        </details>
+                        <details class="group border border-gray-200 rounded-xl bg-gray-50 p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer shadow-sm hover:shadow-md transition">
+                            <summary class="flex justify-between items-center font-medium cursor-pointer list-none text-md text-gray-900">
+                                <span>Why are my seedlings falling over and dying?</span>
+                                <span class="transition group-open:rotate-180"><i class="fa-solid fa-chevron-down text-green-600"></i></span>
+                            </summary>
+                            <div class="text-gray-600 mt-4 leading-relaxed bg-white p-4 rounded-lg border border-gray-100 text-sm">
+                                This is likely 'damping off', a fungal disease caused by overly wet soil and poor airflow. Ensure good drainage, avoid overwatering, and provide gentle air circulation with a small fan.
+                            </div>
+                        </details>
+                        <details class="group border border-gray-200 rounded-xl bg-gray-50 p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer shadow-sm hover:shadow-md transition">
+                            <summary class="flex justify-between items-center font-medium cursor-pointer list-none text-md text-gray-900">
+                                <span>Do I need a heat mat to start seeds indoors?</span>
+                                <span class="transition group-open:rotate-180"><i class="fa-solid fa-chevron-down text-green-600"></i></span>
+                            </summary>
+                            <div class="text-gray-600 mt-4 leading-relaxed bg-white p-4 rounded-lg border border-gray-100 text-sm">
+                                While not strictly necessary for all seeds, a heat mat significantly speeds up germination for heat-loving plants like tomatoes, peppers, and eggplants.
+                            </div>
+                        </details>
+                        <details class="group border border-gray-200 rounded-xl bg-gray-50 p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer shadow-sm hover:shadow-md transition">
+                            <summary class="flex justify-between items-center font-medium cursor-pointer list-none text-md text-gray-900">
+                                <span>How long does it usually take for seeds to germinate?</span>
+                                <span class="transition group-open:rotate-180"><i class="fa-solid fa-chevron-down text-green-600"></i></span>
+                            </summary>
+                            <div class="text-gray-600 mt-4 leading-relaxed bg-white p-4 rounded-lg border border-gray-100 text-sm">
+                                Germination times vary widely by plant type. Rapid growers like radishes might sprout in 3-5 days, while others like peppers can take 1-3 weeks. Check the seed packet for specific times.
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pesticides Tab -->
+            <div id="tab-pesticides" class="tab-content hidden animate-fade-in-up">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 hover:shadow-lg transition">
+                        <div class="w-14 h-14 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center text-2xl mb-6"><i class="fa-solid fa-bottle-droplet"></i></div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Usage Tips</h3>
+                        <p class="text-gray-600 leading-relaxed mb-4">Apply organic pesticides like Neem Oil early in the morning or late evening. Avoid spraying when the sun is harsh to prevent leaf burn.</p>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 hover:shadow-lg transition">
+                        <div class="w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mb-6"><i class="fa-solid fa-shield-halved"></i></div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Maintenance & Storage</h3>
+                        <p class="text-gray-600 leading-relaxed mb-4">Store organic solutions in a cool, dark place. Shake well before every use. For mixed solutions, use them within 24 hours for maximum efficacy.</p>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 hover:shadow-lg transition">
+                        <div class="w-14 h-14 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-2xl mb-6"><i class="fa-solid fa-dove"></i></div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Uses & Benefits</h3>
+                        <p class="text-gray-600 leading-relaxed mb-4">Organic pesticides protect your plants without harming beneficial insects like bees and ladybugs. They are safer for homes with pets and children.</p>
+                    </div>
+                </div>
+
+                <div class="mt-8 bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6 border-b border-gray-100 pb-4">Organic Pesticides FAQ</h2>
+                    <div class="space-y-4">
+                        <details class="group border border-gray-200 rounded-xl bg-gray-50 p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer shadow-sm hover:shadow-md transition">
+                            <summary class="flex justify-between items-center font-medium cursor-pointer list-none text-md text-gray-900">
+                                <span>How often should I apply organic pesticides?</span>
+                                <span class="transition group-open:rotate-180"><i class="fa-solid fa-chevron-down text-green-600"></i></span>
+                            </summary>
+                            <div class="text-gray-600 mt-4 leading-relaxed bg-white p-4 rounded-lg border border-gray-100 text-sm">
+                                Usually, every 7 to 14 days or after heavy rainfall. Always read the specific product label, as application frequency can vary based on the pest severity and product strength.
+                            </div>
+                        </details>
+                        <details class="group border border-gray-200 rounded-xl bg-gray-50 p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer shadow-sm hover:shadow-md transition">
+                            <summary class="flex justify-between items-center font-medium cursor-pointer list-none text-md text-gray-900">
+                                <span>Do organic pesticides harm bees or ladybugs?</span>
+                                <span class="transition group-open:rotate-180"><i class="fa-solid fa-chevron-down text-green-600"></i></span>
+                            </summary>
+                            <div class="text-gray-600 mt-4 leading-relaxed bg-white p-4 rounded-lg border border-gray-100 text-sm">
+                                While safer than synthetic alternatives, some organic pesticides (like pyrethrin or even high concentrations of neem oil) can harm beneficial insects if sprayed directly on them. Apply at dawn or dusk when bees are less active.
+                            </div>
+                        </details>
+                        <details class="group border border-gray-200 rounded-xl bg-gray-50 p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer shadow-sm hover:shadow-md transition">
+                            <summary class="flex justify-between items-center font-medium cursor-pointer list-none text-md text-gray-900">
+                                <span>Can I use neem oil on all types of plants?</span>
+                                <span class="transition group-open:rotate-180"><i class="fa-solid fa-chevron-down text-green-600"></i></span>
+                            </summary>
+                            <div class="text-gray-600 mt-4 leading-relaxed bg-white p-4 rounded-lg border border-gray-100 text-sm">
+                                Most plants tolerate neem oil well, but it can burn foliage on some sensitive plants or if applied during the heat of the day. Always do a patch test first.
+                            </div>
+                        </details>
+                        <details class="group border border-gray-200 rounded-xl bg-gray-50 p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer shadow-sm hover:shadow-md transition">
+                            <summary class="flex justify-between items-center font-medium cursor-pointer list-none text-md text-gray-900">
+                                <span>Are organic pesticides safe for pets and children?</span>
+                                <span class="transition group-open:rotate-180"><i class="fa-solid fa-chevron-down text-green-600"></i></span>
+                            </summary>
+                            <div class="text-gray-600 mt-4 leading-relaxed bg-white p-4 rounded-lg border border-gray-100 text-sm">
+                                They are generally safer than chemical pesticides but can still be irritants or toxic if ingested in large quantities. Store them safely and keep pets and children away right after application until it dries.
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pots Tab -->
+            <div id="tab-pots" class="tab-content hidden animate-fade-in-up">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 hover:shadow-lg transition">
+                        <div class="w-14 h-14 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center text-2xl mb-6"><i class="fa-solid fa-cube"></i></div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Selection Tips</h3>
+                        <p class="text-gray-600 leading-relaxed mb-4">Match the pot to the plant's needs. Terracotta breathes well for succulents; plastic retains moisture for ferns. Always ensure there is a drainage hole.</p>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 hover:shadow-lg transition">
+                        <div class="w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mb-6"><i class="fa-solid fa-broom"></i></div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Maintenance</h3>
+                        <p class="text-gray-600 leading-relaxed mb-4">Clean terracotta pots annually with a mild vinegar solution to remove salt buildup. Ensure saucers are emptied 30 minutes after watering.</p>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 hover:shadow-lg transition">
+                        <div class="w-14 h-14 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center text-2xl mb-6"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Uses & Benefits</h3>
+                        <p class="text-gray-600 leading-relaxed mb-4">The right pot prevents root rot. Beautiful planters act as interior decor statements, tying the room together visually while supporting plant health.</p>
+                    </div>
+                </div>
+
+                <div class="mt-8 bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6 border-b border-gray-100 pb-4">Pots & Planters FAQ</h2>
+                    <div class="space-y-4">
+                        <details class="group border border-gray-200 rounded-xl bg-gray-50 p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer shadow-sm hover:shadow-md transition">
+                            <summary class="flex justify-between items-center font-medium cursor-pointer list-none text-md text-gray-900">
+                                <span>Does my pot really need a drainage hole?</span>
+                                <span class="transition group-open:rotate-180"><i class="fa-solid fa-chevron-down text-green-600"></i></span>
+                            </summary>
+                            <div class="text-gray-600 mt-4 leading-relaxed bg-white p-4 rounded-lg border border-gray-100 text-sm">
+                                Yes! A drainage hole is essential to prevent water from pooling at the bottom, which leads to root rot. If you have a decorative pot without a hole, use it as a 'cachepot' and keep the plant in a plastic nursery pot inside it.
+                            </div>
+                        </details>
+                        <details class="group border border-gray-200 rounded-xl bg-gray-50 p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer shadow-sm hover:shadow-md transition">
+                            <summary class="flex justify-between items-center font-medium cursor-pointer list-none text-md text-gray-900">
+                                <span>How do I clean a terracotta pot before reusing it?</span>
+                                <span class="transition group-open:rotate-180"><i class="fa-solid fa-chevron-down text-green-600"></i></span>
+                            </summary>
+                            <div class="text-gray-600 mt-4 leading-relaxed bg-white p-4 rounded-lg border border-gray-100 text-sm">
+                                Scrub off loose dirt, then soak it in a solution of 1 part white vinegar to 4 parts water for a few hours to dissolve mineral buildup. Rinse thoroughly and let dry.
+                            </div>
+                        </details>
+                        <details class="group border border-gray-200 rounded-xl bg-gray-50 p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer shadow-sm hover:shadow-md transition">
+                            <summary class="flex justify-between items-center font-medium cursor-pointer list-none text-md text-gray-900">
+                                <span>Which is better for my plant: a plastic or terracotta pot?</span>
+                                <span class="transition group-open:rotate-180"><i class="fa-solid fa-chevron-down text-green-600"></i></span>
+                            </summary>
+                            <div class="text-gray-600 mt-4 leading-relaxed bg-white p-4 rounded-lg border border-gray-100 text-sm">
+                                It depends on the plant. Terracotta breathes and wicks moisture away, making it great for succulents or overwaterers. Plastic retains moisture better, making it ideal for ferns or tropicals.
+                            </div>
+                        </details>
+                        <details class="group border border-gray-200 rounded-xl bg-gray-50 p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer shadow-sm hover:shadow-md transition">
+                            <summary class="flex justify-between items-center font-medium cursor-pointer list-none text-md text-gray-900">
+                                <span>When should I upgrade my plant to a larger pot?</span>
+                                <span class="transition group-open:rotate-180"><i class="fa-solid fa-chevron-down text-green-600"></i></span>
+                            </summary>
+                            <div class="text-gray-600 mt-4 leading-relaxed bg-white p-4 rounded-lg border border-gray-100 text-sm">
+                                Repot when roots start growing out of the drainage holes, pushing the plant up, or if water runs straight through the soil without soaking in. Only size up 1-2 inches in diameter at a time.
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+
+<style>
+    .animate-fade-in-up {
+        animation: fadeInUp 0.4s ease-out;
+    }
+    @keyframes fadeInUp {
+        0% { opacity: 0; transform: translateY(10px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+    .hide-scroll-bar::-webkit-scrollbar {
+        display: none;
+    }
+    .hide-scroll-bar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+</style>
+
+<script>
+    function showTab(tabId) {
+        // Hide all contents
+        document.querySelectorAll('.tab-content').forEach(el => {
+            el.classList.add('hidden');
+            el.classList.remove('block');
+        });
+        
+        // Reset all buttons
+        document.querySelectorAll('.tab-btn').forEach(el => {
+            el.classList.remove('bg-green-600', 'text-white', 'shadow-md');
+            el.classList.add('bg-white', 'text-gray-600', 'shadow-sm');
+        });
+
+        // Show active content
+        document.getElementById('tab-' + tabId).classList.remove('hidden');
+        document.getElementById('tab-' + tabId).classList.add('block');
+
+        // Style active button
+        const activeBtn = document.getElementById('tab-btn-' + tabId);
+        activeBtn.classList.remove('bg-white', 'text-gray-600', 'shadow-sm');
+        activeBtn.classList.add('bg-green-600', 'text-white', 'shadow-md');
+    }
+</script>
+
+{% endblock %}

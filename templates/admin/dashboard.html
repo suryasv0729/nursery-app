@@ -1,0 +1,240 @@
+{% extends "admin/admin_base.html" %}
+
+{% block title %}Admin Dashboard | Nursery App{% endblock %}
+
+{% block content %}
+<div id="admin-wrapper" class="bg-gray-50 py-12 min-h-screen hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="flex flex-col md:flex-row gap-8">
+            <!-- Admin Sidebar -->
+            <div class="w-full md:w-64 flex-shrink-0">
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col space-y-1">
+                    <button onclick="switchTab('stats')" class="text-left px-4 py-3 text-sm font-medium rounded-lg bg-green-50 text-green-700" id="tab-btn-stats">
+                        <i class="fa-solid fa-chart-pie w-6"></i> Dashboard
+                    </button>
+                    <button onclick="switchTab('users')" class="text-left px-4 py-3 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50 transition" id="tab-btn-users">
+                        <i class="fa-solid fa-users w-6"></i> Users
+                    </button>
+                    <button onclick="switchTab('products')" class="text-left px-4 py-3 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50 transition" id="tab-btn-products">
+                        <i class="fa-brands fa-pagelines w-6"></i> Products
+                    </button>
+                    <button onclick="switchTab('orders')" class="text-left px-4 py-3 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50 transition" id="tab-btn-orders">
+                        <i class="fa-solid fa-box w-6"></i> Orders
+                    </button>
+                    <button onclick="switchTab('messages')" class="text-left px-4 py-3 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50 transition" id="tab-btn-messages">
+                        <i class="fa-solid fa-envelope w-6"></i> Messages
+                    </button>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="flex-grow">
+                <!-- Stats Tab -->
+                <div id="tab-stats" class="space-y-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Overview</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center">
+                            <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xl mr-4"><i class="fa-solid fa-users"></i></div>
+                            <div>
+                                <p class="text-sm text-gray-500 font-medium">Total Users</p>
+                                <p class="text-2xl font-bold text-gray-900" id="stat-users">-</p>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center">
+                            <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-xl mr-4"><i class="fa-solid fa-box"></i></div>
+                            <div>
+                                <p class="text-sm text-gray-500 font-medium">Total Orders</p>
+                                <p class="text-2xl font-bold text-gray-900" id="stat-orders">-</p>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center">
+                            <div class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xl mr-4"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+                            <div>
+                                <p class="text-sm text-gray-500 font-medium">Revenue</p>
+                                <p class="text-2xl font-bold text-gray-900" id="stat-revenue">-</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shared Table Container for all other tabs -->
+                <div id="tab-table" class="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden hidden relative">
+                    <div class="p-6 border-b flex justify-between items-center" id="table-header">
+                        <h2 class="text-lg font-bold text-gray-900" id="table-title">Data</h2>
+                        <button id="add-prod-btn" class="hidden bg-green-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-green-700 transition"><i class="fa-solid fa-plus mr-1"></i> Add Product</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50" id="table-head">
+                                <!-- JS Injected -->
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200" id="table-body">
+                                <!-- JS Injected -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<!-- Product Modal -->
+<div id="add-prod-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden p-6 relative">
+        <button onclick="document.getElementById('add-prod-modal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
+        <h3 class="text-xl font-bold mb-4" id="prod-modal-title">Add New Product</h3>
+        <form id="add-product-form" class="space-y-4 text-sm">
+            <input type="hidden" id="ap-id" value="">
+            <div><label class="block font-medium mb-1">Name</label><input type="text" id="ap-name" required class="w-full border rounded p-2"></div>
+            <div><label class="block font-medium mb-1">Category</label><select id="ap-cat" class="w-full border rounded p-2"><option>Indoor</option><option>Outdoor</option><option>Succulents</option></select></div>
+            <div><label class="block font-medium mb-1">Price (₹)</label><input type="number" step="0.01" id="ap-price" required class="w-full border rounded p-2"></div>
+            <div><label class="block font-medium mb-1">Stock</label><input type="number" id="ap-stock" required class="w-full border rounded p-2" value="10"></div>
+            <div><label class="block font-medium mb-1">Image URL</label><input type="text" id="ap-image" class="w-full border rounded p-2" placeholder="https://..."></div>
+            <button type="submit" class="w-full bg-green-600 text-white font-medium py-3 rounded-lg hover:bg-green-700">Save Product</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        if(!currentUser || currentUser.role !== 'admin') {
+            window.location.href = "/admin/login";
+            return;
+        }
+        document.getElementById('admin-wrapper').classList.remove('hidden');
+        loadStats();
+        
+        // Setup Product form
+        const addProdBtn = document.getElementById('add-prod-btn');
+        if(addProdBtn) {
+            addProdBtn.onclick = () => {
+                document.getElementById('ap-id').value = '';
+                document.getElementById('add-product-form').reset();
+                document.getElementById('prod-modal-title').textContent = 'Add New Product';
+                document.getElementById('add-prod-modal').classList.remove('hidden');
+            };
+        }
+
+        document.getElementById('add-product-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const prodId = document.getElementById('ap-id').value;
+            const req = {
+                name: document.getElementById('ap-name').value,
+                category: document.getElementById('ap-cat').value,
+                price: document.getElementById('ap-price').value,
+                stock: document.getElementById('ap-stock').value,
+                image_url: document.getElementById('ap-image').value
+            };
+            
+            const method = prodId ? 'PUT' : 'POST';
+            const endpoint = prodId ? `/api/products/${prodId}` : '/api/products/';
+            
+            const {ok} = await apiCall(endpoint, { method, body: JSON.stringify(req) });
+            if(ok) { 
+                showToast(`Product ${prodId ? 'updated' : 'added'}!`); 
+                document.getElementById('add-prod-modal').classList.add('hidden'); 
+                loadTabAdmin('products'); 
+            } else {
+                showToast('Action failed', 'error');
+            }
+        };
+    });
+
+    async function loadStats() {
+        const {ok, data} = await apiCall('/api/admin/stats');
+        if(ok) {
+            document.getElementById('stat-users').textContent = data.total_users;
+            document.getElementById('stat-orders').textContent = data.total_orders;
+            document.getElementById('stat-revenue').textContent = `₹${parseFloat(data.revenue).toFixed(2)}`;
+        }
+    }
+
+    const tabs = ['stats', 'users', 'products', 'orders', 'messages'];
+    function switchTab(tabId) {
+        tabs.forEach(t => {
+            const btn = document.getElementById('tab-btn-' + t);
+            btn.className = `text-left px-4 py-3 text-sm font-medium rounded-lg transition ${t === tabId ? 'bg-green-50 text-green-700' : 'text-gray-600 hover:bg-gray-50'}`;
+        });
+        
+        if(tabId === 'stats') {
+            document.getElementById('tab-stats').classList.remove('hidden');
+            document.getElementById('tab-table').classList.add('hidden');
+            loadStats();
+        } else {
+            document.getElementById('tab-stats').classList.add('hidden');
+            document.getElementById('tab-table').classList.remove('hidden');
+            loadTabAdmin(tabId);
+        }
+    }
+
+    async function loadTabAdmin(tabId) {
+        const tbody = document.getElementById('table-body');
+        const thead = document.getElementById('table-head');
+        tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-sm"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Loading...</td></tr>';
+        document.getElementById('add-prod-btn').classList.add('hidden');
+        
+        let endpoint = '';
+        if(tabId === 'users') { endpoint = '/api/admin/users'; document.getElementById('table-title').textContent = 'User Management'; }
+        if(tabId === 'products') { endpoint = '/api/products/'; document.getElementById('table-title').textContent = 'Product Catalog'; document.getElementById('add-prod-btn').classList.remove('hidden'); }
+        if(tabId === 'orders') { endpoint = '/api/admin/orders'; document.getElementById('table-title').textContent = 'Order History'; }
+        if(tabId === 'messages') { endpoint = '/api/contact/messages'; document.getElementById('table-title').textContent = 'Customer Messages'; }
+        
+        const {ok, data} = await apiCall(endpoint);
+        if(!ok) return;
+        
+        let headerHtml = '';
+        let bodyHtml = '';
+        
+        if(tabId === 'users' && data.length) {
+            headerHtml = `<tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th></tr>`;
+            data.forEach(d => { bodyHtml += `<tr><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${d.id}</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${d.name}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${d.email}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><span class="${d.role==='admin'?'bg-red-100 text-red-800':'bg-blue-100 text-blue-800'} px-2 py-1 text-xs rounded-full uppercase">${d.role}</span></td></tr>`; });
+        } else if (tabId === 'products' && data.length) {
+            headerHtml = `<tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price/Stock</th><th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th></tr>`;
+            data.forEach(d => { 
+                const escapedName = d.name.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                const escapedUrl = (d.image_url||'').replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                bodyHtml += `<tr><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${d.id}</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${d.name}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${d.category}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-medium">₹${d.price} <span class="text-gray-400 text-xs ml-2">Stock: ${d.stock}</span></td><td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"><button onclick="editProduct(${d.id}, '${escapedName}', '${d.category}', ${d.price}, ${d.stock}, '${escapedUrl}')" class="text-blue-600 hover:text-blue-900 mr-4"><i class="fa-solid fa-pen-to-square"></i> Edit</button><button onclick="deleteProduct(${d.id}, '${escapedName}')" class="text-red-600 hover:text-red-900"><i class="fa-solid fa-trash-can"></i> Delete</button></td></tr>`; 
+            });
+        } else if (tabId === 'orders' && data.length) {
+            headerHtml = `<tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th></tr>`;
+            data.forEach(d => { bodyHtml += `<tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#${d.id}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${d.user_name}</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">₹${d.total_amount}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><span class="${d.status==='paid'?'bg-green-100 text-green-800':'bg-yellow-100 text-yellow-800'} px-2 py-1 text-xs rounded-full uppercase">${d.status}</span></td></tr>`; });
+        }  else if (tabId === 'messages' && data.length) {
+            headerHtml = `<tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">From</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Message</th></tr>`;
+            data.forEach(d => { bodyHtml += `<tr><td class="px-6 py-4 text-sm font-medium text-gray-900">${d.name}<br><span class="text-xs text-gray-500 font-normal">${d.email}</span></td><td class="px-6 py-4 text-sm text-gray-500 w-1/4">${d.subject||'<i>No Subject</i>'}</td><td class="px-6 py-4 text-sm text-gray-600">${d.message}</td></tr>`; });
+        } else {
+            bodyHtml = '<tr><td colspan="5" class="px-6 py-8 text-center text-sm text-gray-400 font-medium">No records found.</td></tr>';
+        }
+        
+        thead.innerHTML = headerHtml;
+        tbody.innerHTML = bodyHtml;
+    }
+
+    function editProduct(id, name, cat, price, stock, image) {
+        document.getElementById('ap-id').value = id;
+        document.getElementById('ap-name').value = name;
+        document.getElementById('ap-cat').value = cat;
+        document.getElementById('ap-price').value = price;
+        document.getElementById('ap-stock').value = stock;
+        document.getElementById('ap-image').value = image || '';
+        document.getElementById('prod-modal-title').textContent = 'Edit Product';
+        document.getElementById('add-prod-modal').classList.remove('hidden');
+    }
+
+    async function deleteProduct(id, name) {
+        if(confirm(`Are you sure you want to delete product "${name}"? This action cannot be undone.`)) {
+            const {ok} = await apiCall(`/api/products/${id}`, { method: 'DELETE' });
+            if(ok) {
+                showToast('Product deleted');
+                loadTabAdmin('products');
+            } else {
+                showToast('Failed to delete product', 'error');
+            }
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block title %}Your Cart | Nursery App{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50 py-12 min-h-[70vh]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight mb-8">Shopping Cart</h1>
+        
+        <div id="loader" class="py-20 text-center">
+            <i class="fa-solid fa-spinner fa-spin text-green-600 text-4xl"></i>
+        </div>
+        
+        <div id="empty-cart" class="hidden text-center py-20 bg-white rounded-2xl shadow-sm border border-gray-100">
+            <div class="w-20 h-20 bg-green-50 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">
+                <i class="fa-solid fa-cart-shopping"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">Your cart is empty</h2>
+            <p class="text-gray-500 mb-8">Looks like you haven't added any plants yet.</p>
+            <a href="/products" class="bg-green-600 text-white font-medium py-3 px-8 rounded-lg hover:bg-green-700 transition shadow-md">Start Shopping</a>
+        </div>
+        
+        <div id="cart-content" class="hidden flex flex-col lg:flex-row gap-8">
+            <!-- Items List -->
+            <div class="w-full lg:w-2/3">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                    <ul id="cart-items" class="divide-y divide-gray-100 p-6 space-y-6">
+                        <!-- JS Injected -->
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Summary -->
+            <div class="w-full lg:w-1/3">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sticky top-24">
+                    <h2 class="text-lg font-bold text-gray-900 mb-6">Order Summary</h2>
+                    
+                    <div class="space-y-4 mb-6 text-sm text-gray-600">
+                        <div class="flex justify-between">
+                            <span>Subtotal</span>
+                            <span class="font-medium text-gray-900" id="cart-subtotal">₹0.00</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Shipping</span>
+                            <span class="font-medium text-green-600">Free</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Tax (Included)</span>
+                            <span class="font-medium text-gray-900">₹0.00</span>
+                        </div>
+                    </div>
+                    
+                    <div class="border-t border-gray-200 pt-4 mb-6 flex justify-between items-center">
+                        <span class="font-bold text-gray-900">Total</span>
+                        <span class="text-2xl font-bold text-green-600" id="cart-total">₹0.00</span>
+                    </div>
+                    
+                    <a href="/checkout" class="block w-full text-center bg-gray-900 text-white font-medium py-3 rounded-lg hover:bg-green-600 shadow-md transition">
+                        Proceed to Checkout
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        if(!authToken) {
+            window.location.href = "/";
+            return;
+        }
+        
+        const {ok, data} = await apiCall('/api/cart/');
+        document.getElementById('loader').classList.add('hidden');
+        
+        if(ok && Array.isArray(data) && data.length > 0) {
+            document.getElementById('cart-content').classList.remove('hidden');
+            renderCart(data);
+        } else {
+            document.getElementById('empty-cart').classList.remove('hidden');
+        }
+    });
+    
+    function renderCart(items) {
+        let html = '';
+        let total = 0;
+        
+        items.forEach(item => {
+            const itemTotal = parseFloat(item.price) * item.quantity;
+            total += itemTotal;
+            const imageUrl = item.image_url || 'https://images.unsplash.com/photo-1498814117408-e396f6259ce2?auto=format&fit=crop&w=150&q=80';
+            
+            html += `
+            <li class="flex py-2">
+                <div class="h-24 w-24 flex-shrink-0 overflow-hidden rounded-xl border border-gray-200">
+                    <img src="${imageUrl}" alt="${item.name}" class="h-full w-full object-cover object-center">
+                </div>
+                <div class="ml-4 flex flex-1 flex-col">
+                    <div>
+                        <div class="flex justify-between text-base font-medium text-gray-900">
+                            <h3><a href="/product/${item.product_id}">${item.name}</a></h3>
+                            <p class="ml-4">₹${itemTotal.toFixed(2)}</p>
+                        </div>
+                        <p class="mt-1 text-sm text-gray-500">₹${parseFloat(item.price).toFixed(2)} each</p>
+                    </div>
+                    <div class="flex flex-1 items-end justify-between text-sm">
+                        <div class="flex items-center border border-gray-300 rounded-lg bg-gray-50 h-8">
+                            <button onclick="updateQty(${item.product_id}, ${item.quantity - 1})" class="w-8 h-full flex items-center justify-center text-gray-600 hover:text-green-600 transition"><i class="fa-solid fa-minus text-xs"></i></button>
+                            <span class="w-8 text-center text-gray-900 font-medium">${item.quantity}</span>
+                            <button onclick="updateQty(${item.product_id}, ${item.quantity + 1})" class="w-8 h-full flex items-center justify-center text-gray-600 hover:text-green-600 transition"><i class="fa-solid fa-plus text-xs"></i></button>
+                        </div>
+                        <button type="button" onclick="removeItem(${item.product_id})" class="text-red-500 hover:text-red-700 font-medium text-xs"><i class="fa-regular fa-trash-can mr-1"></i> Remove</button>
+                    </div>
+                </div>
+            </li>
+            `;
+        });
+        
+        document.getElementById('cart-items').innerHTML = html;
+        document.getElementById('cart-subtotal').textContent = `₹${total.toFixed(2)}`;
+        document.getElementById('cart-total').textContent = `₹${total.toFixed(2)}`;
+    }
+    
+    async function updateQty(productId, qty) {
+        if (qty < 1) return removeItem(productId);
+        
+        // Optimistically update the UI to feel instantaneous
+        const qtySpan = document.getElementById(`qty-val-${productId}`);
+        if(qtySpan) qtySpan.textContent = qty;
+        
+        // Show lightweight syncing state
+        document.getElementById('cart-subtotal').innerHTML = '<i class="fa-solid fa-spinner fa-spin text-gray-400"></i>';
+        document.getElementById('cart-total').innerHTML = '<i class="fa-solid fa-spinner fa-spin text-gray-400"></i>';
+
+        const {ok} = await apiCall('/api/cart/update', {
+            method: 'PUT', body: JSON.stringify({product_id: productId, quantity: qty})
+        });
+        
+        if(ok) {
+            // Re-fetch cart data silently to update subtotals correctly
+            const {ok: fetchOk, data} = await apiCall('/api/cart/');
+            if(fetchOk && Array.isArray(data)) renderCart(data);
+        } else {
+            showToast('Failed to update quantity', 'error');
+            window.location.reload(); // fallback
+        }
+    }
+    
+    async function removeItem(productId) {
+        document.getElementById('loader').classList.remove('hidden');
+        document.getElementById('cart-content').classList.add('opacity-50', 'pointer-events-none');
+        
+        const {ok} = await apiCall(`/api/cart/remove/${productId}`, { method: 'DELETE' });
+        
+        if(ok) {
+            showToast('Item removed from cart');
+            const {ok: fetchOk, data} = await apiCall('/api/cart/');
+            if(fetchOk && Array.isArray(data) && data.length > 0) {
+                renderCart(data);
+                document.getElementById('loader').classList.add('hidden');
+                document.getElementById('cart-content').classList.remove('opacity-50', 'pointer-events-none');
+                updateCartCount(); // from main.js
+            } else {
+                window.location.reload();
+            }
+        } else {
+            showToast('Failed to remove item', 'error');
+            window.location.reload();
+        }
+    }
+</script>
+{% endblock %}

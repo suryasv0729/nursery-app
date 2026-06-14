@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Plant Admin Portal{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .toast-appear { animation: slideIn 0.3s ease-out forwards; }
+        .toast-disappear { animation: slideOut 0.3s ease-in forwards; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans flex flex-col min-h-screen">
+
+    <!-- Admin Topbar (Hidden by default, shown via JS if authorized) -->
+    <nav class="bg-gray-900 text-white shadow-xl sticky top-0 z-50 hidden" id="admin-navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="window.location.href='/admin'">
+                    <div class="bg-green-600 rounded p-1.5"><i class="fa-solid fa-gauge-high text-xl"></i></div>
+                    <span class="font-bold text-xl tracking-wide uppercase">GreenHaven Admin</span>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <a href="/" class="text-sm font-medium text-gray-300 hover:text-white transition" target="_blank">
+                        <i class="fa-solid fa-store mr-1"></i> View Storefront
+                    </a>
+                    <button onclick="logoutAdmin()" class="bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-4 py-2 rounded transition shadow">
+                        Sign Out <i class="fa-solid fa-right-from-bracket ml-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow w-full relative">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-20 right-4 z-[9999] space-y-2"></div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        // Check Admin Auth on load for the whole layout
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            let user = localStorage.getItem('user');
+            if(user) user = JSON.parse(user);
+            
+            // If we are on the login page itself, don't show the navbar or redirect
+            if(window.location.pathname.includes('/admin/login')) {
+                return;
+            }
+            
+            if(!token || !user || user.role !== 'admin') {
+                window.location.href = "/admin/login";
+            } else {
+                document.getElementById('admin-navbar').classList.remove('hidden');
+            }
+        });
+        
+        function logoutAdmin() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = "/admin/login";
+        }
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

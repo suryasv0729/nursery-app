@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout | Nursery App{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50 py-12 min-h-screen">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight mb-8 text-center">Checkout</h1>
+        
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+            <form id="checkout-form">
+                <!-- Shipping details -->
+                <h2 class="text-xl font-semibold mb-4 text-gray-900">Contact & Shipping Details</h2>
+                <div class="space-y-4 mb-8">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
+                        <div class="flex">
+                            <span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm font-bold">
+                                +91
+                            </span>
+                            <input type="tel" id="mobile-number" required class="flex-1 min-w-0 block w-full px-4 py-2 rounded-none border-gray-300 focus:ring-green-500 focus:border-green-500 sm:text-sm border" placeholder="Enter 10-digit mobile number" pattern="[0-9]{10}">
+                            <button type="button" id="send-otp-btn" class="inline-flex items-center px-4 rounded-r-lg border border-transparent bg-gray-800 text-white font-medium hover:bg-gray-700 transition ml-2">
+                                Send OTP
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="otp-section" class="hidden">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Verify OTP</label>
+                        <div class="flex">
+                            <input type="text" id="otp-input" class="flex-1 border-gray-300 rounded-l-lg px-4 py-2 focus:ring-green-500 focus:border-green-500 text-sm border" placeholder="Enter OTP (123456)">
+                            <button type="button" id="verify-otp-btn" class="inline-flex items-center px-4 rounded-r-lg border border-transparent bg-green-600 text-white font-medium hover:bg-green-700 transition">
+                                Verify
+                            </button>
+                        </div>
+                        <p id="otp-status" class="text-xs mt-2 hidden"></p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Full Address</label>
+                        <textarea id="ship-address" rows="3" required class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-green-500 focus:border-green-500 text-sm" placeholder="Street, City, State, ZIP..."></textarea>
+                    </div>
+                </div>
+                
+                <!-- Notice -->
+                <div class="bg-blue-50 text-blue-800 p-4 rounded-lg text-sm mb-8 flex">
+                    <i class="fa-solid fa-circle-info mr-3 mt-0.5"></i>
+                    <p>Once you click "Pay with Razorpay", a secure payment gateway window will open to complete your transaction.</p>
+                </div>
+                
+                <button type="submit" id="pay-btn" class="w-full flex items-center justify-center bg-green-600 text-white font-medium py-4 px-8 rounded-lg text-lg hover:bg-green-700 hover:shadow-lg transition">
+                    Pay with Razorpay
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        if(!authToken) window.location.href = "/";
+    });
+
+    let isOtpVerified = false;
+
+    document.getElementById('send-otp-btn').addEventListener('click', async () => {
+        const mobile = document.getElementById('mobile-number').value;
+        if(mobile.length !== 10) {
+            showToast('Please enter a valid 10-digit mobile number', 'error');
+            return;
+        }
+        
+        const btn = document.getElementById('send-otp-btn');
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+        btn.disabled = true;
+
+        const {ok, data} = await apiCall('/api/orders/send-otp', {
+            method: 'POST', body: JSON.stringify({ mobile_number: '+91' + mobile })
+        });
+
+        if(ok) {
+            document.getElementById('otp-section').classList.remove('hidden');
+            showToast('OTP Sent Successfully!');
+            btn.innerHTML = 'Sent';
+        } else {
+            showToast(data.message || 'Failed to send OTP', 'error');
+            btn.innerHTML = 'Send OTP';
+            btn.disabled = false;
+        }
+    });
+
+    document.getElementById('verify-otp-btn').addEventListener('click', async () => {
+        const otp = document.getElementById('otp-input').value;
+        if(!otp) return;
+
+        const btn = document.getElementById('verify-otp-btn');
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+        btn.disabled = true;
+
+        const {ok, data} = await apiCall('/api/orders/verify-otp', {
+            method: 'POST', body: JSON.stringify({ otp: otp })
+        });
+
+        const statusEl = document.getElementById('otp-status');
+        statusEl.classList.remove('hidden');
+
+        if(ok) {
+            isOtpVerified = true;
+            statusEl.className = 'text-xs mt-2 text-green-600 font-bold';
+            statusEl.innerHTML = '<i class="fa-solid fa-check"></i> Number verified successfully';
+            btn.innerHTML = 'Verified';
+            document.getElementById('mobile-number').readOnly = true;
+        } else {
+            statusEl.className = 'text-xs mt-2 text-red-600 font-bold';
+            statusEl.innerHTML = '<i class="fa-solid fa-xmark"></i> Invalid OTP';
+            btn.innerHTML = 'Verify';
+            btn.disabled = false;
+        }
+    });
+
+    document.getElementById('checkout-form').onsubmit = async (e) => {
+        e.preventDefault();
+        
+        if(!isOtpVerified) {
+            showToast('Please verify your mobile number with OTP first', 'error');
+            return;
+        }
+
+        const btn = document.getElementById('pay-btn');
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+        btn.disabled = true;
+        
+        const address = document.getElementById('ship-address').value;
+        const mobile = '+91' + document.getElementById('mobile-number').value;
+        const {ok, data} = await apiCall('/api/orders/create', {
+            method: 'POST', body: JSON.stringify({ shipping_address: address, mobile_number: mobile })
+        });
+        
+        if(!ok || !data.razorpay_order_id) {
+            showToast(data.message || 'Error initializing order', 'error');
+            btn.innerHTML = 'Pay with Razorpay';
+            btn.disabled = false;
+            return;
+        }
+        
+        // Mock Mode Simulation
+        if(data.mock_mode) {
+            setTimeout(async () => {
+                const res = await apiCall('/api/orders/verify', {
+                    method: 'POST', body: JSON.stringify({
+                        razorpay_order_id: data.razorpay_order_id,
+                        razorpay_payment_id: 'mock_payment_' + Date.now().toString(36),
+                        razorpay_signature: 'mock_signature',
+                        mock_mode: true
+                    })
+                });
+                
+                if(res.ok) {
+                    showToast('Mock Payment Successful!');
+                    window.location.href = "/orders";
+                } else {
+                    showToast('Payment Verification Failed', 'error');
+                    window.location.reload();
+                }
+            }, 1500);
+            return;
+        }
+        
+        // Open Razorpay
+        var options = {
+            "key": data.key_id, 
+            "amount": data.amount * 100, 
+            "currency": "INR",
+            "name": "GreenHaven Nursery",
+            "description": "Plant Order Payment",
+            "image": "https://cdn-icons-png.flaticon.com/512/628/628283.png",
+            "order_id": data.razorpay_order_id, 
+            "handler": async function (response){
+                // Verify payment
+                btn.innerHTML = 'Verifying Payment...';
+                const res = await apiCall('/api/orders/verify', {
+                    method: 'POST', body: JSON.stringify({
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_signature: response.razorpay_signature
+                    })
+                });
+                
+                if(res.ok) {
+                    window.location.href = "/orders";
+                } else {
+                    showToast('Payment Verification Failed', 'error');
+                    window.location.reload();
+                }
+            },
+            "prefill": {
+                "name": currentUser.name,
+                "email": currentUser.email
+            },
+            "theme": { "color": "#16a34a" }
+        };
+        var rzp1 = new Razorpay(options);
+        rzp1.on('payment.failed', function (response){
+            showToast('Payment Failed', 'error');
+            btn.innerHTML = 'Pay with Razorpay';
+            btn.disabled = false;
+        });
+        rzp1.open();
+    };
+</script>
+{% endblock %}

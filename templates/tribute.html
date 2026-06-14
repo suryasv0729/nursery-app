@@ -1,0 +1,371 @@
+{% extends "base.html" %}
+
+{% block title %}Green Tribute | Plant a Hope{% endblock %}
+
+{% block content %}
+<!-- Vivek Sir Tribute Banner -->
+<section class="relative bg-gray-900 overflow-hidden h-[60vh] md:h-[70vh] flex items-center justify-center">
+    <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80" alt="Lush Forest" class="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay scale-105 animate-[pulse_10s_ease-in-out_infinite]">
+    <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-green-900/40 to-transparent"></div>
+    <div class="relative z-10 text-center px-4 max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-8">
+        <div class="w-48 h-48 md:w-64 md:h-64 rounded-full border-4 border-green-500 shadow-[0_0_30px_rgba(34,197,94,0.3)] overflow-hidden flex-shrink-0 mx-auto md:mx-0 bg-white">
+            <img src="/static/images/vivek_sir.png" alt="Padmashri Vivek" class="w-full h-full object-cover">
+        </div>
+        <div class="text-center md:text-left">
+            <h1 class="text-4xl md:text-6xl font-extrabold text-white tracking-tight mb-4 drop-shadow-lg">
+                Green Tribute <span class="inline-block animate-bounce text-green-400">🌿</span>
+            </h1>
+            <h2 class="text-xl md:text-2xl text-green-100 font-medium mb-4">Honoring the Vision of Padmashri Vivek Sir</h2>
+            <p class="text-gray-200 text-lg md:text-xl font-light mb-6 max-w-2xl leading-relaxed">
+                "An inspiration to millions, he dedicated his life to environmental awareness and pledged to plant 1 crore saplings, inspired by Dr. A.P.J. Abdul Kalam."
+            </p>
+            <div class="bg-black/30 backdrop-blur-md rounded-2xl p-4 border border-white/10 shadow-2xl inline-block">
+                <p class="italic text-green-50 text-lg">
+                    <i class="fa-solid fa-quote-left text-green-500 mr-2 opacity-50"></i>
+                    Planting a tree is not just an act of duty; it is a profound expression of hope.
+                    <i class="fa-solid fa-quote-right text-green-500 ml-2 opacity-50"></i>
+                </p>
+                <p class="text-right text-green-200 text-sm mt-2 font-semibold">— Dr. A.P.J. Abdul Kalam</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- The Story Behind -->
+<section class="py-16 bg-white relative">
+    <!-- Decorative leaves -->
+    <div class="absolute top-0 right-0 -mr-16 -mt-16 text-green-50 opacity-50 pointer-events-none">
+        <i class="fa-solid fa-leaf text-[200px] transform -rotate-45"></i>
+    </div>
+    
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 z-10 relative">
+        <div class="text-center mb-10">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4 text-center">The Story of 1 Crore Saplings</h2>
+            <div class="w-16 h-1 bg-green-500 mx-auto rounded-full"></div>
+        </div>
+        
+        <div class="prose prose-lg prose-green mx-auto text-gray-600 leading-relaxed text-justify">
+            <p class="mb-4">
+                The spark for this monumental initiative was ignited by former President Dr. A.P.J. Abdul Kalam. During a meeting, Dr. Kalam shared a powerful message with the renowned actor and environmentalist, Vivek. He said, <strong>"If you want to achieve something big, you must have single-minded devotion to your goal and never be disheartened by failures."</strong> Dr. Kalam urged him to use his massive fan base not just for entertainment, but for a cause that would outlive them all—planting trees.
+            </p>
+            <p>
+                Moved by these words, Vivek Sir launched the <em>Green Kalam Project</em>. He didn't just advocate for a greener earth; he got his hands dirty. He traveled across schools, colleges, and villages, inspiring the youth to plant saplings. His mission was clear: to plant 1 crore (10 million) saplings. Though his journey was cut short in 2021, his legacy continues to thrive in the millions of trees bearing protective shade across the nation. Through our platform, we invite you to take the baton and continue this noble mission.
+            </p>
+        </div>
+    </div>
+</section>
+
+
+<!-- Interactive & Dynamic Data Section -->
+<section class="py-16 bg-gray-50 flex flex-col md:flex-row gap-12 max-w-7xl mx-auto px-4 sm:px-6">
+    
+    <!-- Left Column: Hall of fame -->
+    <div class="w-full md:w-1/2">
+        <div class="bg-white rounded-3xl shadow-sm border border-green-100 p-8 h-full">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600 text-xl">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900">Hall of Fame 🌿</h3>
+            </div>
+            <p class="text-gray-500 mb-6">Recognizing our top contributors who are making the world a greener place.</p>
+            
+            <div id="loader-hof" class="text-center py-10">
+                <i class="fa-solid fa-circle-notch fa-spin text-green-500 text-3xl"></i>
+            </div>
+            
+            <ul id="hof-list" class="space-y-4 hidden">
+                <!-- Injected via JS -->
+            </ul>
+        </div>
+    </div>
+
+    <!-- Right Column: User's Green Streak & Rewards -->
+    <div class="w-full md:w-1/2">
+        <div class="bg-white rounded-3xl shadow-sm border border-green-100 p-8 h-full relative overflow-hidden group hover:shadow-md transition">
+            <div class="absolute top-0 right-0 p-8 opacity-5">
+                <i class="fa-solid fa-seedling text-9xl"></i>
+            </div>
+            
+            <div id="user-unauth" class="text-center py-12">
+                <div class="w-20 h-20 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
+                    <i class="fa-solid fa-user-lock"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Track Your Contribution</h3>
+                <p class="text-gray-500 mb-6">Log in to view your Green Streak and unlock exclusive rewards.</p>
+                
+                <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 p-4 rounded-xl mb-6 shadow-sm text-sm font-medium">
+                    <i class="fa-solid fa-circle-info mr-2"></i><strong>Reward Criteria:</strong> Buy a total of 50 saplings to unlock the <em>Green Hero Reward</em> — get a product of your choice from EVERY category for free!
+                </div>
+                
+                <button onclick="if(typeof openAuthModal==='function') openAuthModal(); else alert('Login modal unavailable.');" class="bg-green-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-green-700 transition shadow-lg shadow-green-200">
+                    Login / Sign up
+                </button>
+            </div>
+            
+            <div id="user-auth" class="hidden relative z-10">
+                <div class="flex items-center gap-4 mb-8">
+                    <div class="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white text-2xl shadow-lg shadow-green-200">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900" id="tribute-user-name">Welcome!</h3>
+                        <p class="text-green-600 font-medium tracking-wide text-sm uppercase">Green Enthusiast</p>
+                    </div>
+                </div>
+
+                <div class="bg-green-50 rounded-2xl p-6 border border-green-100 mb-8 transform transition hover:scale-105">
+                    <h4 class="text-sm text-green-800 uppercase tracking-wider font-bold mb-2">Your Green Streak</h4>
+                    <div class="flex items-end gap-2">
+                        <span class="text-5xl font-extrabold text-green-600" id="streak-counter">0</span>
+                        <span class="text-lg text-green-700 font-medium mb-1">plants contributed 🌱</span>
+                    </div>
+                    <div class="w-full bg-green-200 h-2 mt-4 rounded-full overflow-hidden">
+                        <div id="streak-progress" class="bg-green-500 h-full rounded-full transition-all duration-1000" style="width: 0%;"></div>
+                    </div>
+                    <div class="flex justify-between items-center mt-2">
+                        <p class="text-xs text-green-600" id="streak-target-text">Plant 50 to unlock rewards!</p>
+                        <i class="fa-solid fa-circle-question text-green-600 cursor-pointer" title="Criteria: Reach 50 plants purchased to claim 1 free item from each available category!"></i>
+                    </div>
+                </div>
+                
+                <!-- Rewards Section (Hidden if < 50) -->
+                <div id="rewards-section" class="hidden">
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-2xl p-6 relative overflow-hidden">
+                        <div class="absolute -right-4 -top-4 opacity-10 transform rotate-12 pointer-events-none">
+                            <i class="fa-solid fa-award text-9xl text-yellow-500"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-yellow-800 mb-1 relative z-10 flex items-center gap-2">
+                            🌟 Green Hero Achievement Unlocked!
+                        </h4>
+                        <p class="text-sm text-yellow-800 mb-4 relative z-10 font-bold">
+                            As part of the Green Kalam mission, everyone who nurtures over 50 plants receives a Free Sapling Kit completely on us!
+                        </p>
+                        <p class="text-xs text-yellow-700 mb-6 relative z-10">
+                            Choose <span class="font-bold underline">one free sapling</span> from every category below. Once you select them, click Claim to have them shipped for free.
+                        </p>
+                        
+                        <div id="claim-success" class="hidden text-center py-8">
+                            <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
+                                <i class="fa-solid fa-check"></i>
+                            </div>
+                            <h4 class="font-bold text-green-800 text-xl">Rewards Claimed!</h4>
+                            <p class="text-sm text-green-700 mt-2">Your plants have been successfully added to your order history with a total value of ₹0.</p>
+                            <a href="/orders" class="inline-block mt-4 text-green-700 font-bold hover:underline">View Your Free Order -></a>
+                        </div>
+                        
+                        <form id="reward-claim-form" class="relative z-10 space-y-4">
+                            <!-- JS Injected Selectors -->
+                        </form>
+                    </div>
+                </div>
+
+                <div class="mt-8 text-center">
+                    <a href="/products" class="inline-flex items-center justify-center bg-gray-900 text-white font-medium px-8 py-3 rounded-xl hover:bg-green-600 hover:shadow-lg hover:shadow-green-200 transition-all group w-full sm:w-auto">
+                        Continue Planting 🌱
+                        <i class="fa-solid fa-arrow-right ml-2 transform group-hover:translate-x-1 transition"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        // Fetch Tribute Data
+        let headers = {};
+        if (typeof authToken !== 'undefined' && authToken) {
+            headers['Authorization'] = `Bearer ${authToken}`;
+        }
+
+        try {
+            const response = await fetch('/api/tribute', { headers });
+            const result = await response.json();
+            
+            document.getElementById('loader-hof').classList.add('hidden');
+            document.getElementById('hof-list').classList.remove('hidden');
+            
+            // Populate Hall of Fame
+            const topUsers = result.top_contributors || [];
+            if (topUsers.length === 0) {
+                document.getElementById('hof-list').innerHTML = '<p class="text-gray-500 italic">Be the first to step into the Hall of Fame!</p>';
+            } else {
+                let hofHtml = '';
+                topUsers.forEach((user, idx) => {
+                    let positionIcon = '';
+                    if (idx === 0) positionIcon = '<div class="absolute -top-2 -left-2 w-6 h-6 bg-yellow-400 text-white rounded-full flex items-center justify-center text-xs font-bold border-2 border-white shadow">1</div>';
+                    else if (idx === 1) positionIcon = '<div class="absolute -top-2 -left-2 w-6 h-6 bg-gray-300 text-white rounded-full flex items-center justify-center text-xs font-bold border-2 border-white shadow">2</div>';
+                    else if (idx === 2) positionIcon = '<div class="absolute -top-2 -left-2 w-6 h-6 bg-yellow-600 text-white rounded-full flex items-center justify-center text-xs font-bold border-2 border-white shadow">3</div>';
+
+                    hofHtml += `
+                    <li class="flex items-center gap-4 bg-gray-50 rounded-2xl p-4 border border-gray-100 hover:border-green-200 hover:bg-green-50 transition relative">
+                        ${positionIcon}
+                        <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-green-600 font-bold border border-green-100 text-xl shadow-sm">
+                            ${user.name.charAt(0).toUpperCase()}
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-gray-900">${user.name}</h4>
+                            <p class="text-sm text-gray-500">Global Contributor</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="block text-xl font-black text-green-600">${user.total_plants}</span>
+                            <span class="text-xs text-gray-400 uppercase tracking-widest font-semibold">Plants</span>
+                        </div>
+                    </li>`;
+                });
+                document.getElementById('hof-list').innerHTML = hofHtml;
+            }
+
+            // Populate User Auth Section
+            if (typeof authToken !== 'undefined' && authToken) {
+                document.getElementById('user-unauth').classList.add('hidden');
+                document.getElementById('user-auth').classList.remove('hidden');
+                
+                // Set name from local storage if possible
+                const uName = localStorage.getItem('userName') || 'Green Hero';
+                document.getElementById('tribute-user-name').textContent = uName;
+
+                if (result.user_stats) {
+                    const count = result.user_stats.total_plants;
+                    animateValue("streak-counter", 0, count, 1500);
+                    
+                    const percent = Math.min(100, (count / 50) * 100);
+                    setTimeout(() => {
+                        document.getElementById('streak-progress').style.width = percent + '%';
+                    }, 100);
+
+                    if (count >= 50) {
+                        document.getElementById('streak-target-text').textContent = "Goal reached! Amazing work!";
+                        document.getElementById('streak-target-text').classList.replace('text-green-600', 'text-green-800');
+                        document.getElementById('streak-target-text').classList.add('font-bold');
+                        document.getElementById('streak-progress').classList.add('shadow-[0_0_15px_rgba(34,197,94,0.7)]');
+
+                        // Show rewards
+                        document.getElementById('rewards-section').classList.remove('hidden');
+                        
+                        // Check if already claimed
+                        if (result.user_stats.reward_claimed) {
+                            document.getElementById('reward-claim-form').classList.add('hidden');
+                            document.getElementById('claim-success').classList.remove('hidden');
+                            document.getElementById('claim-success').innerHTML = `
+                                <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
+                                    <i class="fa-solid fa-gift"></i>
+                                </div>
+                                <h4 class="font-bold text-green-800 text-xl">You've Already Claimed Your Reward!</h4>
+                                <a href="/orders" class="inline-block mt-4 text-green-700 font-bold hover:underline">View Your Free Orders -></a>
+                            `;
+                        } else {
+                            const categories = result.reward_categories || [];
+                            let formHtml = '';
+                            
+                            categories.forEach((catObj, index) => {
+                                let optionsHtml = '';
+                                catObj.products.forEach(p => {
+                                    optionsHtml += `<option value="${p.id}">${p.name}</option>`;
+                                });
+                                
+                                formHtml += `
+                                <div class="bg-white/80 p-4 rounded-xl border border-yellow-200 shadow-sm backdrop-blur-sm">
+                                    <label class="block text-sm font-bold text-gray-800 mb-2">Category: ${catObj.category}</label>
+                                    <select name="reward_${index}" class="claim-select w-full rounded-lg border-gray-300 focus:border-green-500 focus:ring-green-500 bg-white" required>
+                                        <option value="" disabled selected>Select your free ${catObj.category}</option>
+                                        ${optionsHtml}
+                                    </select>
+                                </div>
+                                `;
+                            });
+                            
+                            formHtml += `
+                            <div class="pt-4 text-center">
+                                <button type="submit" class="w-full md:w-auto px-8 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white font-bold rounded-xl shadow-lg shadow-yellow-200 hover:from-yellow-600 hover:to-yellow-700 transform hover:scale-105 transition">
+                                    Claim Free Rewards 🎁
+                                </button>
+                            </div>
+                            `;
+                            
+                            document.getElementById('reward-claim-form').innerHTML = formHtml;
+                            
+                            // Form Submit Action
+                            document.getElementById('reward-claim-form').addEventListener('submit', async (e) => {
+                                e.preventDefault();
+                                const selects = document.querySelectorAll('.claim-select');
+                                const productIds = Array.from(selects).map(s => parseInt(s.value)).filter(v => !isNaN(v));
+                                
+                                if (productIds.length < categories.length) {
+                                    alert('Please select one item from every category.');
+                                    return;
+                                }
+                                
+                                try {
+                                    const claimBtn = e.target.querySelector('button[type="submit"]');
+                                    claimBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+                                    claimBtn.disabled = true;
+                                    
+                                    const claimRes = await fetch('/api/tribute/claim', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'Authorization': `Bearer ${authToken}`
+                                        },
+                                        body: JSON.stringify({ product_ids: productIds })
+                                    });
+                                    
+                                    const claimData = await claimRes.json();
+                                    
+                                    if (claimRes.ok) {
+                                        document.getElementById('reward-claim-form').classList.add('hidden');
+                                        document.getElementById('claim-success').classList.remove('hidden');
+                                    } else {
+                                        alert(claimData.message || 'Failed to claim reward.');
+                                        claimBtn.innerHTML = 'Claim Free Rewards 🎁';
+                                        claimBtn.disabled = false;
+                                    }
+                                } catch(err) {
+                                    console.error(err);
+                                    alert('An error occurred.');
+                                }
+                            });
+                        }
+                    } else {
+                        document.getElementById('streak-target-text').textContent = `Plant ${50 - count} more to unlock rewards!`;
+                    }
+                }
+            }
+
+        } catch (error) {
+            console.error("Error fetching tribute data", error);
+            document.getElementById('loader-hof').innerHTML = '<p class="text-red-500">Failed to load data. Please refresh.</p>';
+        }
+    });
+
+    function animateValue(id, start, end, duration) {
+        if (start === end) {
+            document.getElementById(id).innerHTML = end;
+            return;
+        }
+        let current = start;
+        let increment = end > start ? 1 : -1;
+        
+        // Dynamic step time to ensure the animation fits the duration smoothly
+        // Cap the number of steps to prevent freezing on large numbers
+        const steps = Math.min(Math.abs(end - start), 60); 
+        const stepTime = Math.abs(Math.floor(duration / steps));
+        
+        const jump = Math.max(1, Math.floor(Math.abs(end - start) / steps));
+
+        let obj = document.getElementById(id);
+        let timer = setInterval(function() {
+            current += increment * jump;
+            if (current >= end) {
+                current = end;
+                clearInterval(timer);
+            }
+            obj.innerHTML = current;
+        }, stepTime);
+    }
+</script>
+{% endblock %}

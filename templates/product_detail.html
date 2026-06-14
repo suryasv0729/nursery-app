@@ -1,0 +1,291 @@
+{% extends "base.html" %}
+
+{% block title %}Product Details | Nursery App{% endblock %}
+
+{% block content %}
+<div class="bg-white py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div id="loader" class="py-20 text-center">
+            <i class="fa-solid fa-spinner fa-spin text-green-600 text-4xl"></i>
+        </div>
+        
+        <div id="product-content" class="hidden">
+            <!-- Breadcrumb -->
+            <nav class="flex mb-8 text-sm text-gray-500 font-medium">
+                <a href="/" class="hover:text-gray-900 text-green-600">Home</a>
+                <span class="mx-2">/</span>
+                <a href="/products" class="hover:text-gray-900 text-green-600">Shop</a>
+                <span class="mx-2">/</span>
+                <span id="bc-name" class="text-gray-900"></span>
+            </nav>
+
+            <div class="flex flex-col md:flex-row gap-12">
+                <!-- Images -->
+                <div class="w-full md:w-1/2">
+                    <div class="rounded-3xl overflow-hidden bg-gray-50 aspect-square mb-4 border border-gray-100 relative tilt-card" style="transform-style: preserve-3d; will-change: transform;">
+                        <img id="main-image" src="" alt="" class="w-full h-full object-cover transform transition duration-700 tilt-image" style="transform: translateZ(30px)">
+                        <button onclick="window.toggleWishlist(window.currentProductId, this)" class="absolute top-4 right-4 z-10 w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-50 text-gray-400 hover:text-red-500 transition" style="transform: translateZ(50px)">
+                            <i class="fa-regular fa-heart text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Info -->
+                <div class="w-full md:w-1/2 flex flex-col justify-center">
+                    <div class="mb-6">
+                        <span id="cat-badge" class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full font-semibold uppercase tracking-wider"></span>
+                    </div>
+                    <h1 id="prod-name" class="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight mb-4"></h1>
+                    
+                    <div class="flex items-center mb-6">
+                        <div class="flex text-yellow-400 text-sm mr-2" id="star-rating">
+                            <!-- Injected -->
+                        </div>
+                        <span class="text-gray-500 text-sm" id="review-count"></span>
+                    </div>
+                    
+                    <div class="text-3xl font-bold text-gray-900 mb-6" id="prod-price"></div>
+                    
+                    <p class="text-gray-600 mb-8 leading-relaxed" id="prod-desc"></p>
+                    
+                    <!-- Botanical Details Grid -->
+                    <div id="botanical-details" class="hidden mb-8 grid grid-cols-2 gap-4 border border-green-100 rounded-xl p-4 bg-green-50/50">
+                        <div class="botanical-item" id="item-origin">
+                            <span class="block text-xs font-bold text-green-700 uppercase tracking-widest mb-1"><i class="fa-solid fa-earth-americas mr-1"></i> Origin</span>
+                            <span class="text-sm text-gray-800 font-medium" id="prod-origin"></span>
+                        </div>
+                        <div class="botanical-item" id="item-bloom">
+                            <span class="block text-xs font-bold text-green-700 uppercase tracking-widest mb-1"><i class="fa-solid fa-sun mr-1"></i> Bloom Time</span>
+                            <span class="text-sm text-gray-800 font-medium" id="prod-bloom"></span>
+                        </div>
+                        <div class="botanical-item" id="item-watering">
+                            <span class="block text-xs font-bold text-green-700 uppercase tracking-widest mb-1"><i class="fa-solid fa-droplet mr-1"></i> Watering</span>
+                            <span class="text-sm text-gray-800 font-medium" id="prod-watering"></span>
+                        </div>
+                        <div class="botanical-item" id="item-psychology">
+                            <span class="block text-xs font-bold text-green-700 uppercase tracking-widest mb-1"><i class="fa-solid fa-brain mr-1"></i> Psychology</span>
+                            <span class="text-sm text-gray-800 font-medium" id="prod-psychology"></span>
+                        </div>
+                        <div class="botanical-item col-span-2" id="item-medicinal">
+                            <span class="block text-xs font-bold text-green-700 uppercase tracking-widest mb-1"><i class="fa-solid fa-staff-snake mr-1"></i> Medicinal</span>
+                            <span class="text-sm text-gray-800 font-medium" id="prod-medicinal"></span>
+                        </div>
+                        <div class="botanical-item col-span-2" id="item-other">
+                            <span class="block text-xs font-bold text-green-700 uppercase tracking-widest mb-1"><i class="fa-solid fa-seedling mr-1"></i> Other Uses</span>
+                            <span class="text-sm text-gray-800 font-medium" id="prod-other"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4 pb-8 border-b border-gray-200">
+                        <!-- Quantity Selector -->
+                        <div class="flex items-center border border-gray-300 rounded-lg bg-white h-12">
+                            <button onclick="adjustQty(-1)" class="w-12 h-full flex items-center justify-center text-gray-600 hover:text-green-600 hover:bg-gray-50 rounded-l-lg transition"><i class="fa-solid fa-minus"></i></button>
+                            <input type="number" id="qty-input" value="1" min="1" class="w-12 text-center text-gray-900 font-medium focus:outline-none border-x border-gray-100 h-full p-0 flex items-center bg-transparent">
+                            <button onclick="adjustQty(1)" class="w-12 h-full flex items-center justify-center text-gray-600 hover:text-green-600 hover:bg-gray-50 rounded-r-lg transition"><i class="fa-solid fa-plus"></i></button>
+                        </div>
+                        
+                        <button onclick="addToCartDetail()" class="flex-grow bg-green-600 text-white font-medium py-3 px-8 rounded-lg hover:bg-green-700 shadow-md hover:shadow-lg transition flex items-center justify-center h-12">
+                            <i class="fa-solid fa-cart-shopping mr-2"></i> Add to Cart
+                        </button>
+                    </div>
+                    
+                    <div class="mt-8 space-y-4 text-sm text-gray-600">
+                        <div class="flex items-center"><i class="fa-solid fa-leaf text-green-600 w-6"></i> Premium quality guarantee</div>
+                        <div class="flex items-center"><i class="fa-solid fa-truck text-green-600 w-6"></i> Free shipping on orders over ₹999</div>
+                        <div class="flex items-center"><i class="fa-solid fa-shield-cat text-green-600 w-6"></i> Pest-free & pet safe options available</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reviews Section -->
+            <div class="mt-20 pt-10 border-t border-gray-200">
+                <h2 class="text-2xl font-bold text-gray-900 mb-8">Customer Reviews</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                    <!-- Write Review -->
+                    <div class="md:col-span-1">
+                        <div class="bg-gray-50 p-6 rounded-2xl">
+                            <h3 class="font-semibold text-lg mb-4">Write a Review</h3>
+                            <form id="review-form">
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+                                    <select id="rev-rating" class="w-full border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-green-500 focus:border-green-500">
+                                        <option value="5">5 Stars - Excellent</option>
+                                        <option value="4">4 Stars - Very Good</option>
+                                        <option value="3">3 Stars - Average</option>
+                                        <option value="2">2 Stars - Poor</option>
+                                        <option value="1">1 Star - Terrible</option>
+                                    </select>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Comment</label>
+                                    <textarea id="rev-comment" rows="4" class="w-full border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-green-500 focus:border-green-500" placeholder="Share your experience..."></textarea>
+                                </div>
+                                <button type="submit" class="w-full border border-gray-300 text-gray-700 bg-white font-medium py-2 rounded-lg hover:bg-gray-50 transition">
+                                    Submit Review
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Review List -->
+                    <div class="md:col-span-2 space-y-6" id="reviews-list">
+                        <!-- JS Injected -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+<script>
+    const productId = {{ product_id }};
+    window.currentProductId = productId;
+    
+    document.addEventListener('DOMContentLoaded', async () => {
+        const {ok, data} = await apiCall(`/api/products/${productId}`);
+        document.getElementById('loader').classList.add('hidden');
+        
+        if(ok && data && !data.error) {
+            document.getElementById('product-content').classList.remove('hidden');
+            
+            // Populate Basic Info
+            document.getElementById('bc-name').textContent = data.name;
+            document.getElementById('cat-badge').textContent = data.category;
+            document.getElementById('prod-name').textContent = data.name;
+            document.getElementById('prod-price').textContent = `₹${parseFloat(data.price).toFixed(2)}`;
+            document.getElementById('prod-desc').textContent = data.description || 'A beautiful plant looking for a nice home.';
+            
+            // Populate Botanical Info
+            const hasBotanicalData = data.origin || data.bloom_time || data.watering_time || data.psychology_note || data.medicinal_uses || data.other_uses;
+            if (hasBotanicalData) {
+                document.getElementById('botanical-details').classList.remove('hidden');
+                
+                const updateField = (valId, containerId, value) => {
+                    const container = document.getElementById(containerId);
+                    if (value) {
+                        document.getElementById(valId).textContent = value;
+                        container.classList.remove('hidden');
+                    } else {
+                        container.classList.add('hidden');
+                    }
+                };
+                
+                updateField('prod-origin', 'item-origin', data.origin);
+                updateField('prod-bloom', 'item-bloom', data.bloom_time);
+                updateField('prod-watering', 'item-watering', data.watering_time);
+                updateField('prod-psychology', 'item-psychology', data.psychology_note);
+                updateField('prod-medicinal', 'item-medicinal', data.medicinal_uses);
+                updateField('prod-other', 'item-other', data.other_uses);
+            }
+            
+            document.getElementById('main-image').src = data.image_url || 'https://images.unsplash.com/photo-1498814117408-e396f6259ce2?auto=format&fit=crop&w=800&q=80';
+            
+            // Reviews setup
+            const reviews = data.reviews || [];
+            document.getElementById('review-count').textContent = `(${reviews.length} reviews)`;
+            
+            let html = '';
+            if(reviews.length === 0) {
+                html = '<p class="text-gray-500">No reviews yet. Be the first to review this product!</p>';
+                document.getElementById('star-rating').innerHTML = '<i class="fa-regular fa-star"></i>'.repeat(5);
+            } else {
+                let avg = reviews.reduce((a, b) => a + b.rating, 0) / reviews.length;
+                let ratingHtml = '';
+                for(let i=1; i<=5; i++) {
+                    if(i <= Math.round(avg)) ratingHtml += '<i class="fa-solid fa-star"></i>';
+                    else ratingHtml += '<i class="fa-regular fa-star"></i>';
+                }
+                document.getElementById('star-rating').innerHTML = ratingHtml;
+                
+                reviews.forEach(r => {
+                    let stars = '';
+                    for(let i=1; i<=5; i++) stars += (i <= r.rating) ? '<i class="fa-solid fa-star text-yellow-400"></i>' : '<i class="fa-regular fa-star text-gray-300"></i>';
+                        
+                    html += `
+                    <div class="pb-6 border-b border-gray-100 last:border-0 last:pb-0">
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 rounded-full bg-green-100 text-green-700 flex items-center justify-center font-bold text-xs mr-3">
+                                    ${r.user_name.charAt(0).toUpperCase()}
+                                </div>
+                                <span class="font-medium text-gray-900">${r.user_name}</span>
+                            </div>
+                            <span class="text-xs text-gray-400">${new Date(r.created_at).toLocaleDateString()}</span>
+                        </div>
+                        <div class="flex text-xs mb-2">${stars}</div>
+                        <p class="text-gray-600 text-sm whitespace-pre-wrap">${r.comment}</p>
+                    </div>`;
+                });
+            }
+            document.getElementById('reviews-list').innerHTML = html;
+        } else {
+            document.querySelector('.max-w-7xl').innerHTML = `
+                <div class="text-center py-20">
+                    <i class="fa-solid fa-plant-wilt text-6xl text-gray-300 mb-4"></i>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">Product Not Found</h2>
+                    <p class="text-gray-500 mb-6">This plant may have been removed or doesn't exist.</p>
+                    <a href="/products" class="text-green-600 hover:text-green-700 font-medium">Browse our catalog</a>
+                </div>
+            `;
+        }
+        
+        // Review submission
+        document.getElementById('review-form').onsubmit = async (e) => {
+            e.preventDefault();
+            if(!authToken) {
+                openAuthModal();
+                showToast('Please login to leave a review', 'info');
+                return;
+            }
+            const bgBtn = e.target.querySelector('button');
+            bgBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+            
+            const req = {
+                rating: document.getElementById('rev-rating').value,
+                comment: document.getElementById('rev-comment').value
+            };
+            
+            const res = await apiCall(`/api/products/${productId}/reviews`, {
+                method: 'POST', body: JSON.stringify(req)
+            });
+            
+            if(res.ok) {
+                showToast('Review submitted successfully!');
+                setTimeout(() => window.location.reload(), 1000);
+            } else {
+                showToast(res.data.error || res.data.message || 'Failed to submit review', 'error');
+                bgBtn.innerHTML = 'Submit Review';
+            }
+        };
+        
+        // Initialize 3D Vanilla Tilt effect
+        if (typeof VanillaTilt !== 'undefined') {
+            VanillaTilt.init(document.querySelectorAll('.tilt-card'), {
+                max: 15,
+                speed: 400,
+                glare: true,
+                "max-glare": 0.3,
+                scale: 1.05
+            });
+        }
+    });
+    
+    function adjustQty(change) {
+        const input = document.getElementById('qty-input');
+        let val = parseInt(input.value) + change;
+        if(val < 1) val = 1;
+        input.value = val;
+    }
+    
+    function addToCartDetail() {
+        const qty = parseInt(document.getElementById('qty-input').value);
+        window.addToCart(productId, qty);
+    }
+</script>
+{% endblock %}

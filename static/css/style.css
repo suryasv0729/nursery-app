@@ -1,0 +1,62 @@
+/* Custom Styles to augment Tailwind */
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Auth Modal reveal animations */
+#auth-modal.show {
+    display: flex;
+}
+#auth-modal.show #auth-modal-content {
+    transform: scale(1);
+    opacity: 1;
+}
+
+/* Chatbot animation */
+#chat-window.show {
+    display: flex;
+    transform: scale(1);
+    opacity: 1;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1; 
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8; 
+}
+
+/* Dynamic styling for cards */
+.product-card {
+    transition: all 0.3s ease;
+}
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+/* Toasts */
+.toast-appear {
+    animation: slideInRight 0.3s forwards;
+}
+.toast-disappear {
+    animation: fadeOut 0.3s forwards;
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}

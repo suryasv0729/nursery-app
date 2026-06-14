@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block title %}Order History | Nursery App{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50 py-12 min-h-[70vh]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight mb-8">Order History</h1>
+        
+        <div id="loader" class="py-20 text-center">
+            <i class="fa-solid fa-spinner fa-spin text-green-600 text-4xl"></i>
+        </div>
+        
+        <div id="empty-state" class="hidden text-center py-20 bg-white rounded-2xl shadow-sm border border-gray-100">
+            <div class="w-16 h-16 bg-gray-50 text-gray-400 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                <i class="fa-solid fa-box-open"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-900 mb-2">No orders yet</h2>
+            <p class="text-gray-500 mb-6">Looks like you haven't placed any orders.</p>
+            <a href="/products" class="bg-gray-900 text-white font-medium px-6 py-2 rounded-lg hover:bg-green-600 transition">Start Shopping</a>
+        </div>
+        
+        <div id="orders-list" class="space-y-6 hidden">
+            <!-- JS Injected -->
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        if(!authToken) { window.location.href = "/"; return; }
+        
+        const {ok, data} = await apiCall('/api/orders/history');
+        document.getElementById('loader').classList.add('hidden');
+        
+        if(ok && Array.isArray(data) && data.length > 0) {
+            document.getElementById('orders-list').classList.remove('hidden');
+            let html = '';
+            
+            data.forEach(o => {
+                let badgeClass = 'bg-gray-100 text-gray-800';
+                if(o.status === 'paid') badgeClass = 'bg-green-100 text-green-800';
+                if(o.status === 'pending') badgeClass = 'bg-yellow-100 text-yellow-800';
+                if(o.status === 'cancelled') badgeClass = 'bg-red-100 text-red-800';
+                if(o.status === 'shipped') badgeClass = 'bg-blue-100 text-blue-800';
+                
+                let itemsHtml = '';
+                if(o.items && o.items.length) {
+                    o.items.forEach(i => {
+                        itemsHtml += `<li class="flex items-center justify-between text-sm text-gray-600 py-2 border-b last:border-0 border-gray-50"><span>${i.quantity}x ${i.name}</span><span>₹${(i.quantity * i.price).toFixed(2)}</span></li>`;
+                    });
+                }
+                
+                let reasonHtml = '';
+                if(o.status === 'cancelled' && o.cancel_reason) {
+                    reasonHtml = `<div class="bg-red-50 text-red-700 text-sm px-4 py-3 border-t border-red-100 italic"><i class="fa-solid fa-circle-info mr-1"></i> Cancelled Reason: ${o.cancel_reason}</div>`;
+                }
+                
+                html += `
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="bg-gray-50 px-6 py-4 border-b border-gray-100 flex flex-col md:flex-row md:items-center justify-between">
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-1">Order Placed</p>
+                            <p class="text-sm text-gray-900 font-medium">${new Date(o.created_at).toLocaleDateString()}</p>
+                        </div>
+                        <div class="mt-4 md:mt-0">
+                            <p class="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-1 hidden md:block group-hover:block transition">Order ID</p>
+                            <p class="text-sm text-gray-500 md:text-gray-900 font-mono">#${o.id}</p>
+                        </div>
+                        <div class="mt-4 md:mt-0 text-left md:text-right flex items-center md:block">
+                            <span class="${badgeClass} px-3 py-1 rounded-full text-xs uppercase font-medium mr-4 md:mr-0 md:mb-1 inline-block">${o.status}</span>
+                            <p class="text-lg font-bold text-gray-900">₹${parseFloat(o.total_amount).toFixed(2)}</p>
+                        </div>
+                    </div>
+                    <div class="px-6 py-4">
+                        <ul class="divide-y divide-gray-100">
+                            ${itemsHtml}
+                        </ul>
+                    </div>
+                    ${reasonHtml}
+                    <div class="px-6 py-4 flex justify-between items-center bg-gray-50 border-t border-gray-100">
+                        <button onclick='downloadInvoice(${JSON.stringify(o)})' class="text-sm text-green-600 hover:text-green-800 font-medium"><i class="fa-solid fa-file-invoice mr-1"></i> Download Invoice</button>
+                        <div class="flex gap-3">
+                            ${['pending', 'paid'].includes(o.status) ? `<button onclick="cancelOrder(${o.id})" class="text-sm bg-red-50 text-red-600 hover:bg-red-100 font-medium px-4 py-2 rounded-lg transition"><i class="fa-solid fa-ban mr-1"></i> Cancel & Refund</button>` : ''}
+                            ${['paid', 'shipped'].includes(o.status) ? `
+                                <a href="tel:+919876543210" class="text-sm bg-blue-600 text-white hover:bg-blue-700 font-medium px-4 py-2 rounded-lg transition"><i class="fa-solid fa-phone mr-1"></i> Call Driver</a>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>`;
+            });
+            document.getElementById('orders-list').innerHTML = html;
+        } else {
+            document.getElementById('empty-state').classList.remove('hidden');
+        }
+    });
+
+    window.downloadInvoice = function(order) {
+        let itemsHtml = '';
+        order.items.forEach(i => {
+            itemsHtml += `
+            <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 12px 8px;">${i.name}</td>
+                <td style="padding: 12px 8px; text-align: center;">${i.quantity}</td>
+                <td style="padding: 12px 8px; text-align: right;">₹${parseFloat(i.price).toFixed(2)}</td>
+                <td style="padding: 12px 8px; text-align: right;">₹${(i.quantity * i.price).toFixed(2)}</td>
+            </tr>`;
+        });
+
+        const invoiceHtml = `
+            <html><head><title>Invoice #${order.id}</title>
+            <style>
+                body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #333; margin: 0; padding: 40px; }
+                .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #16a34a; padding-bottom: 20px; margin-bottom: 30px; }
+                .title { font-size: 28px; font-weight: bold; color: #16a34a; margin:0; }
+                .subtitle { font-size: 14px; color: #666; margin-top:5px; }
+                .invoice-details { text-align: right; }
+                .invoice-details h2 { margin: 0; font-size: 20px; color: #333; }
+                .invoice-details p { margin: 5px 0; font-size: 14px; color: #666; }
+                table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+                th { background-color: #f8f9fa; color: #333; font-weight: bold; text-align: left; padding: 12px 8px; border-bottom: 2px solid #ddd; }
+                .total-row td { font-weight: bold; font-size: 16px; border-top: 2px solid #ddd; padding-top: 15px; }
+                .footer { text-align: center; color: #888; font-size: 12px; margin-top: 50px; border-top: 1px solid #eee; padding-top: 20px; }
+            </style>
+            </head><body>
+            <div class="header">
+                <div>
+                    <h1 class="title">GreenHaven Nursery</h1>
+                    <p class="subtitle">123 Botanical Garden, Flora City, FC 12345</p>
+                    <p class="subtitle">support@nursery.com | +91 98765 43210</p>
+                </div>
+                <div class="invoice-details">
+                    <h2>INVOICE</h2>
+                    <p>Order ID: <strong>#${order.id}</strong></p>
+                    <p>Date: ${new Date(order.created_at).toLocaleDateString()}</p>
+                    <p>Status: <span style="text-transform: uppercase;">${order.status}</span></p>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <tr><th>Product</th><th style="text-align: center;">Qty</th><th style="text-align: right;">Price</th><th style="text-align: right;">Total</th></tr>
+                </thead>
+                <tbody>
+                    ${itemsHtml}
+                    <tr class="total-row">
+                        <td colspan="3" style="text-align: right;">Total Amount:</td>
+                        <td style="text-align: right; color: #16a34a;">₹${parseFloat(order.total_amount).toFixed(2)}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="footer">Thank you for your business! This is a computer-generated invoice.</div>
+            <script>window.onload = function() { window.print(); window.setTimeout(window.close, 500); }<\/script>
+            </body></html>
+        `;
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(invoiceHtml);
+        printWindow.document.close();
+    };
+    window.cancelOrder = async function(orderId) {
+        const reason = prompt('Are you sure you want to cancel this order? If paid, a refund will be initiated.\n\nPlease provide a reason for cancellation:');
+        if (reason === null) return; // User clicked Cancel in prompt
+        
+        try {
+            const {ok, data} = await apiCall(`/api/orders/${orderId}/cancel`, { 
+                method: 'POST',
+                body: JSON.stringify({ reason: reason.trim() || 'No reason provided' })
+            });
+            if(ok) {
+                alert('Order cancelled successfully.');
+                window.location.reload();
+            } else {
+                alert('Failed to cancel order: ' + (data.message || 'Unknown error'));
+            }
+        } catch(e) {
+            console.error(e);
+            alert('An error occurred while cancelling the order.');
+        }
+    };
+</script>
+{% endblock %}
