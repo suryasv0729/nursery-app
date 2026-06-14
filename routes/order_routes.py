@@ -1,15 +1,27 @@
 from flask import Blueprint, request, jsonify
-import razorpay
 import os
 from utils.db import get_db_connection
 from utils.auth import token_required
+
+# Try to import razorpay, but don't fail if it's not available
+try:
+    import razorpay
+    RAZORPAY_AVAILABLE = True
+except ImportError:
+    RAZORPAY_AVAILABLE = False
+    razorpay = None
 
 order_bp = Blueprint('orders', __name__)
 
 # Initialize Razorpay client
 RAZORPAY_KEY_ID = os.getenv('RAZORPAY_KEY_ID', '')
 RAZORPAY_KEY_SECRET = os.getenv('RAZORPAY_KEY_SECRET', '')
-razorpay_client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET)) if RAZORPAY_KEY_ID else None
+razorpay_client = None
+if RAZORPAY_AVAILABLE and RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET:
+    try:
+        razorpay_client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
+    except Exception as e:
+        print(f"Warning: Could not initialize Razorpay client: {e}")
 
 @order_bp.route('/', methods=['GET'])
 @token_required
