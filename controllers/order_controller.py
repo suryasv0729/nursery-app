@@ -1,16 +1,28 @@
 import os
-import razorpay
 from utils.db import get_db_connection
 from utils.mail import send_email
+
+# Try to import razorpay, but don't fail if it's not available
+try:
+    import razorpay
+    RAZORPAY_AVAILABLE = True
+except ImportError:
+    RAZORPAY_AVAILABLE = False
+    razorpay = None
 
 KEY_ID = os.getenv('RAZORPAY_KEY_ID', '')
 KEY_SECRET = os.getenv('RAZORPAY_KEY_SECRET', '')
 
 # Treat placeholder values as empty
-has_razorpay_keys = bool(KEY_ID and KEY_SECRET and KEY_ID != 'test_key_here')
+has_razorpay_keys = bool(RAZORPAY_AVAILABLE and KEY_ID and KEY_SECRET and KEY_ID != 'test_key_here')
 
 if has_razorpay_keys:
-    razorpay_client = razorpay.Client(auth=(KEY_ID, KEY_SECRET))
+    try:
+        razorpay_client = razorpay.Client(auth=(KEY_ID, KEY_SECRET))
+    except Exception as e:
+        print(f"Warning: Could not initialize Razorpay client: {e}")
+        razorpay_client = None
+        has_razorpay_keys = False
 else:
     razorpay_client = None
 
@@ -94,7 +106,9 @@ def verify_payment(data):
                 'razorpay_payment_id': razorpay_payment_id,
                 'razorpay_signature': razorpay_signature
             })
-        except razorpay.errors.SignatureVerificationError:
+        except Exception as e:
+            # Catch any razorpay errors or signature verification failures
+            print(f"Payment verification error: {e}")
             return {'status': 400, 'data': {'message': 'Signature verification failed'}}
         
     # Signature is valid, update order status
